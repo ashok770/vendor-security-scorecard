@@ -1,4 +1,11 @@
 import React, { useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate, Link } from "react-router-dom";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Login from "./pages/Login";
+
+// Import our original dashboard modules
 import {
   Shield,
   ShieldAlert,
@@ -11,18 +18,32 @@ import {
   Server,
   Activity,
   AlertTriangle,
+  LogOut,
 } from "lucide-react";
 
-function App() {
+// GOOGLE CLIENT ID KEY CONFIGURATION
+const GOOGLE_CLIENT_ID =
+  "64465390574-88ailc5motssvr0msc2mm1sin1ilfvfr.apps.googleusercontent.com";
+
+// SECURE PROTECTED PATH ACCESS CONTROLLER ROUTE
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem("sentinel_token");
+  return token ? children : <Navigate to="/login" replace />;
+};
+
+// MOUNT SYSTEM RUNTIME DASHBOARD CORE
+function DashboardSuite() {
   const [domain, setDomain] = useState("");
   const [loading, setLoading] = useState(false);
   const [scanResult, setScanResult] = useState(null);
   const [error, setError] = useState("");
 
+  // Parse session metadata to read real identity profile details
+  const sessionUser = JSON.parse(localStorage.getItem("sentinel_user") || "{}");
+
   const handleScan = async (e) => {
     e.preventDefault();
     if (!domain) return;
-
     setLoading(true);
     setError("");
     setScanResult(null);
@@ -33,17 +54,16 @@ function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ domain }),
       });
-
       const data = await response.json();
       if (response.ok) {
         setScanResult(data);
       } else {
-        setError(data.error || "An error occurred during scanning.");
+        setError(
+          data.error || "Vulnerability scanning runtime interrupt error.",
+        );
       }
     } catch (err) {
-      setError(
-        "Cannot connect to the backend server. Make sure it is running.",
-      );
+      setError("Connection failure reaching threat calculation engine API.");
     } finally {
       setLoading(false);
     }
@@ -64,6 +84,11 @@ function App() {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.href = "/";
+  };
+
   return (
     <div
       style={{
@@ -73,27 +98,88 @@ function App() {
         width: "100%",
       }}
     >
-      {/* Header */}
+      {/* Dynamic Identity Management Dashboard Header Banner Bar */}
       <header
         style={{
           display: "flex",
+          justifyContent: "space-between",
           alignItems: "center",
-          gap: "1rem",
           marginBottom: "2rem",
+          borderBottom: "1px solid #334155",
+          paddingBottom: "1rem",
         }}
       >
-        <Shield size={40} style={{ color: "#34d399" }} />
-        <div>
-          <h1 style={{ margin: 0, fontSize: "1.8rem" }}>
-            Third-Party Risk Sentinel
-          </h1>
-          <p style={{ margin: 0, color: "#94a3b8" }}>
-            Automated Vendor Security Posture Scorecard
-          </p>
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          <Shield size={36} style={{ color: "#34d399" }} />
+          <div>
+            <h2 style={{ margin: 0, fontSize: "1.4rem" }}>
+              Risk Sentinel Dashboard
+            </h2>
+            <p style={{ margin: 0, color: "#94a3b8", fontSize: "0.85rem" }}>
+              Active Threat Intelligence Suite
+            </p>
+          </div>
+        </div>
+
+        {/* Render logged user profile parameters */}
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          {sessionUser.avatar ? (
+            <img
+              src={sessionUser.avatar}
+              alt="Profile"
+              style={{
+                width: "36px",
+                height: "36px",
+                borderRadius: "50%",
+                border: "2px solid #10b981",
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                width: "36px",
+                height: "36px",
+                borderRadius: "50%",
+                backgroundColor: "#334155",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "0.9rem",
+                fontWeight: "bold",
+              }}
+            >
+              {sessionUser.name ? sessionUser.name[0].toUpperCase() : "U"}
+            </div>
+          )}
+          <div style={{ textAlign: "left" }}>
+            <div style={{ fontSize: "0.9rem", fontWeight: "bold" }}>
+              {sessionUser.name || "Operator"}
+            </div>
+            <small style={{ color: "#64748b", display: "block" }}>
+              {sessionUser.email}
+            </small>
+          </div>
+          <button
+            onClick={handleLogout}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.25rem",
+              padding: "0.4rem 0.75rem",
+              backgroundColor: "#334155",
+              color: "#f8fafc",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontSize: "0.85rem",
+            }}
+          >
+            <LogOut size={14} /> Clear Token
+          </button>
         </div>
       </header>
 
-      {/* Search Bar */}
+      {/* Search Bar Input Panel Container */}
       <form
         onSubmit={handleScan}
         style={{ display: "flex", gap: "1rem", marginBottom: "2rem" }}
@@ -153,10 +239,9 @@ function App() {
         </div>
       )}
 
-      {/* Dashboard Layout */}
+      {/* Metrics Scorecard Visual Panel Cards Render Area Block */}
       {scanResult && (
         <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-          {/* Top Rating Summary */}
           <div
             className="crypto-card"
             style={{
@@ -195,7 +280,7 @@ function App() {
               <div>
                 IP:{" "}
                 <strong style={{ color: "#f8fafc" }}>
-                  {scanResult.infrastructure?.ip_address || "N/A"}
+                  {scanResult.infrastructure?.ip_address || "Unknown"}
                 </strong>
               </div>
               <small style={{ color: "#64748b" }}>
@@ -204,7 +289,6 @@ function App() {
             </div>
           </div>
 
-          {/* Main 2-Column Content Section */}
           <div
             style={{
               display: "grid",
@@ -212,7 +296,6 @@ function App() {
               gap: "2rem",
             }}
           >
-            {/* Headers Card */}
             <div className="crypto-card">
               <h3
                 style={{
@@ -270,7 +353,6 @@ function App() {
               </div>
             </div>
 
-            {/* DNS Card */}
             <div className="crypto-card">
               <h3
                 style={{
@@ -354,7 +436,6 @@ function App() {
             </div>
           </div>
 
-          {/* New Bottom Full-Width Shodan Infrastructure Threat Intel Section */}
           <div className="crypto-card">
             <h3
               style={{
@@ -374,7 +455,6 @@ function App() {
                 gap: "2rem",
               }}
             >
-              {/* Left Subsection: Open Ports */}
               <div>
                 <h4
                   style={{
@@ -416,8 +496,6 @@ function App() {
                   </p>
                 )}
               </div>
-
-              {/* Right Subsection: CVE System Vulnerabilities */}
               <div>
                 <h4
                   style={{
@@ -470,6 +548,29 @@ function App() {
         </div>
       )}
     </div>
+  );
+}
+
+// WRAP MULTI-PAGE APPLICATION ARCHITECTURE IN GLOBAL ROUTING ROUTER MODULE
+function App() {
+  return (
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardSuite />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </GoogleOAuthProvider>
   );
 }
 
