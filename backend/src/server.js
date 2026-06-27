@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 const Scan = require("./models/Scan");
+const authRoutes = require('./routes/auth');
 
 const app = (report) => express();
 const appInstance = express();
@@ -70,6 +71,8 @@ appInstance.post("/api/scan", (req, res) => {
     }
   });
 });
+
+appInstance.use('/api/auth', authRoutes);
 
 appInstance.listen(PORT, () => {
   console.log(`Server running smoothly on port ${PORT}`);
