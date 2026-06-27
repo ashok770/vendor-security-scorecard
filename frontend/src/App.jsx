@@ -8,6 +8,9 @@ import {
   Globe,
   Key,
   Mail,
+  Server,
+  Activity,
+  AlertTriangle,
 } from "lucide-react";
 
 function App() {
@@ -79,11 +82,7 @@ function App() {
           marginBottom: "2rem",
         }}
       >
-        <Shield
-          size={40}
-          className="text-emerald-400"
-          style={{ color: "#34d399" }}
-        />
+        <Shield size={40} style={{ color: "#34d399" }} />
         <div>
           <h1 style={{ margin: 0, fontSize: "1.8rem" }}>
             Third-Party Risk Sentinel
@@ -94,7 +93,7 @@ function App() {
         </div>
       </header>
 
-      {/* Search Input Bar */}
+      {/* Search Bar */}
       <form
         onSubmit={handleScan}
         style={{ display: "flex", gap: "1rem", marginBottom: "2rem" }}
@@ -154,10 +153,10 @@ function App() {
         </div>
       )}
 
-      {/* Dashboard Metrics Layout */}
+      {/* Dashboard Layout */}
       {scanResult && (
         <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-          {/* Top Summary Card */}
+          {/* Top Rating Summary */}
           <div
             className="crypto-card"
             style={{
@@ -193,11 +192,19 @@ function App() {
               </div>
             </div>
             <div style={{ color: "#94a3b8", textAlign: "right" }}>
-              <span>Status: Active Recon Completed</span>
+              <div>
+                IP:{" "}
+                <strong style={{ color: "#f8fafc" }}>
+                  {scanResult.infrastructure?.ip_address || "N/A"}
+                </strong>
+              </div>
+              <small style={{ color: "#64748b" }}>
+                ISP: {scanResult.infrastructure?.isp || "Unknown"}
+              </small>
             </div>
           </div>
 
-          {/* Breakdown Content Grid */}
+          {/* Main 2-Column Content Section */}
           <div
             style={{
               display: "grid",
@@ -205,7 +212,7 @@ function App() {
               gap: "2rem",
             }}
           >
-            {/* Security Headers Module */}
+            {/* Headers Card */}
             <div className="crypto-card">
               <h3
                 style={{
@@ -236,11 +243,19 @@ function App() {
                         paddingBottom: "0.5rem",
                       }}
                     >
-                      <div>
+                      <div style={{ maxWidth: "85%" }}>
                         <span style={{ fontWeight: "600", display: "block" }}>
                           {header}
                         </span>
-                        <small style={{ color: "#94a3b8" }}>{data.value}</small>
+                        <small
+                          style={{
+                            color: "#94a3b8",
+                            block: "block",
+                            wordBreak: "break-all",
+                          }}
+                        >
+                          {data.value}
+                        </small>
                       </div>
                       <span>
                         {data.status === "Secure" ? (
@@ -255,7 +270,7 @@ function App() {
               </div>
             </div>
 
-            {/* Email & DNS Security Module */}
+            {/* DNS Card */}
             <div className="crypto-card">
               <h3
                 style={{
@@ -266,7 +281,7 @@ function App() {
                 }}
               >
                 <Mail size={20} style={{ color: "#c084fc" }} /> DNS Spoofing &
-                Email Fraud Protection
+                Phishing Protection
               </h3>
               <div
                 style={{
@@ -330,10 +345,124 @@ function App() {
                         }}
                       >
                         {data.record ||
-                          `No ${recordType} policy published in DNS. Domain can be spoofed.`}
+                          `No ${recordType} policy published in DNS.`}
                       </p>
                     </div>
                   ),
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* New Bottom Full-Width Shodan Infrastructure Threat Intel Section */}
+          <div className="crypto-card">
+            <h3
+              style={{
+                margin: "0 0 1.5rem 0",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+              }}
+            >
+              <Server size={20} style={{ color: "#f59e0b" }} /> Shodan
+              Infrastructure Intelligence
+            </h3>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "2rem",
+              }}
+            >
+              {/* Left Subsection: Open Ports */}
+              <div>
+                <h4
+                  style={{
+                    margin: "0 0 1rem 0",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    color: "#cbd5e1",
+                  }}
+                >
+                  <Activity size={16} /> Public Exposed Network Ports
+                </h4>
+                {scanResult.infrastructure?.open_ports?.length > 0 ? (
+                  <div
+                    style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}
+                  >
+                    {scanResult.infrastructure.open_ports.map((port) => (
+                      <span
+                        key={port}
+                        style={{
+                          padding: "0.25rem 0.75rem",
+                          backgroundColor: "#ef4444",
+                          color: "white",
+                          borderRadius: "4px",
+                          fontSize: "0.85rem",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        Port {port}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p
+                    style={{ margin: 0, color: "#34d399", fontSize: "0.9rem" }}
+                  >
+                    ✅ No dangerous listening infrastructure ports publicly
+                    exposed.
+                  </p>
+                )}
+              </div>
+
+              {/* Right Subsection: CVE System Vulnerabilities */}
+              <div>
+                <h4
+                  style={{
+                    margin: "0 0 1rem 0",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    color: "#cbd5e1",
+                  }}
+                >
+                  <AlertTriangle size={16} /> Verified Software Exploit
+                  Vulnerabilities
+                </h4>
+                {scanResult.infrastructure?.vulnerabilities?.length > 0 ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "0.5rem",
+                    }}
+                  >
+                    {scanResult.infrastructure.vulnerabilities.map((v) => (
+                      <span
+                        key={v}
+                        style={{
+                          padding: "0.5rem",
+                          backgroundColor: "#7f1d1d",
+                          border: "1px solid #f87171",
+                          color: "#fca5a5",
+                          borderRadius: "4px",
+                          fontFamily: "monospace",
+                          fontSize: "0.85rem",
+                        }}
+                      >
+                        🚨 {v}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p
+                    style={{ margin: 0, color: "#34d399", fontSize: "0.9rem" }}
+                  >
+                    ✅ No known CVE vulnerabilities indexed on this server
+                    address.
+                  </p>
                 )}
               </div>
             </div>
