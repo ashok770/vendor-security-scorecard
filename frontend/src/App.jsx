@@ -57,7 +57,10 @@ function DashboardSuite() {
   // Tracks selected domains for comparison matrix
   const [selectedCompareDomains, setSelectedCompareDomains] = useState([]);
   const [isComparing, setIsComparing] = useState(false);
-  const [compareData, setCompareData] = useState({ vendorA: null, vendorB: null });
+  const [compareData, setCompareData] = useState({
+    vendorA: null,
+    vendorB: null,
+  });
   const [activeScorecard, setActiveScorecard] = useState(null);
 
   const sessionUser = JSON.parse(localStorage.getItem("sentinel_user") || "{}");
@@ -279,18 +282,20 @@ function DashboardSuite() {
                 key={scan._id}
                 className={`w-full p-3.5 rounded-xl border transition-all flex items-center justify-between gap-3 relative group ${
                   activeScorecard?.domain === scan.domain && !isComparing
-                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                    : 'bg-[#0d1527] border-slate-800/80 hover:border-slate-700/60 text-slate-300'
+                    ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+                    : "bg-[#0d1527] border-slate-800/80 hover:border-slate-700/60 text-slate-300"
                 }`}
                 style={{
                   padding: "0.875rem",
                   borderRadius: "12px",
-                  border: activeScorecard?.domain === scan.domain && !isComparing 
-                    ? "1px solid rgba(16,185,129,0.3)" 
-                    : "1px solid #1e293b",
-                  backgroundColor: activeScorecard?.domain === scan.domain && !isComparing 
-                    ? "rgba(16,185,129,0.1)" 
-                    : "#0d1527",
+                  border:
+                    activeScorecard?.domain === scan.domain && !isComparing
+                      ? "1px solid rgba(16,185,129,0.3)"
+                      : "1px solid #1e293b",
+                  backgroundColor:
+                    activeScorecard?.domain === scan.domain && !isComparing
+                      ? "rgba(16,185,129,0.1)"
+                      : "#0d1527",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
@@ -306,9 +311,14 @@ function DashboardSuite() {
                     e.stopPropagation(); // Stop parent click event
                     if (e.target.checked) {
                       if (selectedCompareDomains.length >= 2) return; // Cap at 2 vendors maximum
-                      setSelectedCompareDomains(prev => [...prev, scan.domain]);
+                      setSelectedCompareDomains((prev) => [
+                        ...prev,
+                        scan.domain,
+                      ]);
                     } else {
-                      setSelectedCompareDomains(prev => prev.filter(d => d !== scan.domain));
+                      setSelectedCompareDomains((prev) =>
+                        prev.filter((d) => d !== scan.domain),
+                      );
                     }
                   }}
                   style={{
@@ -429,8 +439,12 @@ function DashboardSuite() {
               <button
                 onClick={() => {
                   // Find full record structures from history matching our checked items
-                  const vendorA = scanHistory.find(s => s.domain === selectedCompareDomains[0]);
-                  const vendorB = scanHistory.find(s => s.domain === selectedCompareDomains[1]);
+                  const vendorA = scanHistory.find(
+                    (s) => s.domain === selectedCompareDomains[0],
+                  );
+                  const vendorB = scanHistory.find(
+                    (s) => s.domain === selectedCompareDomains[1],
+                  );
                   setCompareData({ vendorA, vendorB });
                   setIsComparing(true);
                 }}
@@ -665,72 +679,289 @@ function DashboardSuite() {
             /* ─── THE EXECUTIVE MULTI-VENDOR COMPARE MATRIX GRID ─── */
             <div style={{ animation: "fadeIn 0.3s ease-in" }}>
               <div style={{ marginBottom: "2rem" }}>
-                <h2 style={{ fontSize: "1.25rem", fontWeight: "800", color: "white", letterSpacing: "-0.025em", marginBottom: "0.5rem" }}>Executive Vendor Comparison</h2>
-                <p style={{ fontSize: "0.75rem", color: "#64748b", margin: 0 }}>Side-by-side risk perimeter alignment comparison analytics.</p>
+                <h2
+                  style={{
+                    fontSize: "1.25rem",
+                    fontWeight: "800",
+                    color: "white",
+                    letterSpacing: "-0.025em",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  Executive Vendor Comparison
+                </h2>
+                <p style={{ fontSize: "0.75rem", color: "#64748b", margin: 0 }}>
+                  Side-by-side risk perimeter alignment comparison analytics.
+                </p>
               </div>
 
               {/* Split View Comparison Pillars Header */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
-                
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "1.5rem",
+                }}
+              >
                 {/* VENDOR A PANEL */}
-                <div style={{ backgroundColor: "rgba(12, 18, 34, 0.6)", border: "1px solid #1e293b", borderRadius: "1rem", padding: "1.5rem" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-                    <span style={{ fontSize: "1.125rem", fontWeight: "700", color: "#34d399" }}>{compareData.vendorA?.domain}</span>
-                    <span style={{ fontSize: "0.75rem", backgroundColor: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.2)", color: "#34d399", paddingLeft: "0.75rem", paddingRight: "0.75rem", paddingTop: "0.25rem", paddingBottom: "0.25rem", borderRadius: "999px", fontFamily: "monospace", fontWeight: "700" }}>
-                      Grade {compareData.vendorA?.rating?.grade || 'N/A'}
+                <div
+                  style={{
+                    backgroundColor: "rgba(12, 18, 34, 0.6)",
+                    border: "1px solid #1e293b",
+                    borderRadius: "1rem",
+                    padding: "1.5rem",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "1rem",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: "1.125rem",
+                        fontWeight: "700",
+                        color: "#34d399",
+                      }}
+                    >
+                      {compareData.vendorA?.domain}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: "0.75rem",
+                        backgroundColor: "rgba(16,185,129,0.1)",
+                        border: "1px solid rgba(16,185,129,0.2)",
+                        color: "#34d399",
+                        paddingLeft: "0.75rem",
+                        paddingRight: "0.75rem",
+                        paddingTop: "0.25rem",
+                        paddingBottom: "0.25rem",
+                        borderRadius: "999px",
+                        fontFamily: "monospace",
+                        fontWeight: "700",
+                      }}
+                    >
+                      Grade {compareData.vendorA?.rating?.grade || "N/A"}
                     </span>
                   </div>
-                  <div style={{ fontSize: "1.875rem", fontWeight: "900", color: "white", marginBottom: "1.5rem", letterSpacing: "-0.025em" }}>
-                    {compareData.vendorA?.rating?.numeric_score || compareData.vendorA?.score || 30}<span style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: "400" }}> / 100 Maturity</span>
+                  <div
+                    style={{
+                      fontSize: "1.875rem",
+                      fontWeight: "900",
+                      color: "white",
+                      marginBottom: "1.5rem",
+                      letterSpacing: "-0.025em",
+                    }}
+                  >
+                    {compareData.vendorA?.rating?.numeric_score ||
+                      compareData.vendorA?.score ||
+                      30}
+                    <span
+                      style={{
+                        fontSize: "0.75rem",
+                        color: "#64748b",
+                        fontWeight: "400",
+                      }}
+                    >
+                      {" "}
+                      / 100 Maturity
+                    </span>
                   </div>
-                  
+
                   {/* Metric Overview List */}
-                  <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", fontWeight: "500", fontSize: "0.75rem" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: "0.75rem", paddingRight: "0.75rem", paddingTop: "0.75rem", paddingBottom: "0.75rem", backgroundColor: "#0d1527", border: "1px solid #1e293b", borderRadius: "0.75rem" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "0.75rem",
+                      fontWeight: "500",
+                      fontSize: "0.75rem",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        paddingLeft: "0.75rem",
+                        paddingRight: "0.75rem",
+                        paddingTop: "0.75rem",
+                        paddingBottom: "0.75rem",
+                        backgroundColor: "#0d1527",
+                        border: "1px solid #1e293b",
+                        borderRadius: "0.75rem",
+                      }}
+                    >
                       <span style={{ color: "#94a3b8" }}>HSTS Headers</span>
-                      <span style={{ color: compareData.vendorA?.rating?.grade === 'A' ? '#34d399' : '#f87171' }}>
-                        {compareData.vendorA?.rating?.grade === 'A' ? '✅ Configured' : '❌ Vulnerable'}
+                      <span
+                        style={{
+                          color:
+                            compareData.vendorA?.rating?.grade === "A"
+                              ? "#34d399"
+                              : "#f87171",
+                        }}
+                      >
+                        {compareData.vendorA?.rating?.grade === "A"
+                          ? "✅ Configured"
+                          : "❌ Vulnerable"}
                       </span>
                     </div>
-                    <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: "0.75rem", paddingRight: "0.75rem", paddingTop: "0.75rem", paddingBottom: "0.75rem", backgroundColor: "#0d1527", border: "1px solid #1e293b", borderRadius: "0.75rem" }}>
-                      <span style={{ color: "#94a3b8" }}>DNS Anti-Spoofing</span>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        paddingLeft: "0.75rem",
+                        paddingRight: "0.75rem",
+                        paddingTop: "0.75rem",
+                        paddingBottom: "0.75rem",
+                        backgroundColor: "#0d1527",
+                        border: "1px solid #1e293b",
+                        borderRadius: "0.75rem",
+                      }}
+                    >
+                      <span style={{ color: "#94a3b8" }}>
+                        DNS Anti-Spoofing
+                      </span>
                       <span style={{ color: "#34d399" }}>✅ Secured</span>
                     </div>
                   </div>
                 </div>
 
                 {/* VENDOR B PANEL */}
-                <div style={{ backgroundColor: "rgba(12, 18, 34, 0.6)", border: "1px solid #1e293b", borderRadius: "1rem", padding: "1.5rem" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-                    <span style={{ fontSize: "1.125rem", fontWeight: "700", color: "#0ea5e9" }}>{compareData.vendorB?.domain}</span>
-                    <span style={{ fontSize: "0.75rem", backgroundColor: "rgba(14, 165, 233, 0.1)", border: "1px solid rgba(14, 165, 233, 0.2)", color: "#0ea5e9", paddingLeft: "0.75rem", paddingRight: "0.75rem", paddingTop: "0.25rem", paddingBottom: "0.25rem", borderRadius: "999px", fontFamily: "monospace", fontWeight: "700" }}>
-                      Grade {compareData.vendorB?.rating?.grade || 'N/A'}
+                <div
+                  style={{
+                    backgroundColor: "rgba(12, 18, 34, 0.6)",
+                    border: "1px solid #1e293b",
+                    borderRadius: "1rem",
+                    padding: "1.5rem",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "1rem",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: "1.125rem",
+                        fontWeight: "700",
+                        color: "#0ea5e9",
+                      }}
+                    >
+                      {compareData.vendorB?.domain}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: "0.75rem",
+                        backgroundColor: "rgba(14, 165, 233, 0.1)",
+                        border: "1px solid rgba(14, 165, 233, 0.2)",
+                        color: "#0ea5e9",
+                        paddingLeft: "0.75rem",
+                        paddingRight: "0.75rem",
+                        paddingTop: "0.25rem",
+                        paddingBottom: "0.25rem",
+                        borderRadius: "999px",
+                        fontFamily: "monospace",
+                        fontWeight: "700",
+                      }}
+                    >
+                      Grade {compareData.vendorB?.rating?.grade || "N/A"}
                     </span>
                   </div>
-                  <div style={{ fontSize: "1.875rem", fontWeight: "900", color: "white", marginBottom: "1.5rem", letterSpacing: "-0.025em" }}>
-                    {compareData.vendorB?.rating?.numeric_score || compareData.vendorB?.score || 30}<span style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: "400" }}> / 100 Maturity</span>
+                  <div
+                    style={{
+                      fontSize: "1.875rem",
+                      fontWeight: "900",
+                      color: "white",
+                      marginBottom: "1.5rem",
+                      letterSpacing: "-0.025em",
+                    }}
+                  >
+                    {compareData.vendorB?.rating?.numeric_score ||
+                      compareData.vendorB?.score ||
+                      30}
+                    <span
+                      style={{
+                        fontSize: "0.75rem",
+                        color: "#64748b",
+                        fontWeight: "400",
+                      }}
+                    >
+                      {" "}
+                      / 100 Maturity
+                    </span>
                   </div>
 
                   {/* Metric Overview List */}
-                  <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", fontWeight: "500", fontSize: "0.75rem" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: "0.75rem", paddingRight: "0.75rem", paddingTop: "0.75rem", paddingBottom: "0.75rem", backgroundColor: "#0d1527", border: "1px solid #1e293b", borderRadius: "0.75rem" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "0.75rem",
+                      fontWeight: "500",
+                      fontSize: "0.75rem",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        paddingLeft: "0.75rem",
+                        paddingRight: "0.75rem",
+                        paddingTop: "0.75rem",
+                        paddingBottom: "0.75rem",
+                        backgroundColor: "#0d1527",
+                        border: "1px solid #1e293b",
+                        borderRadius: "0.75rem",
+                      }}
+                    >
                       <span style={{ color: "#94a3b8" }}>HSTS Headers</span>
-                      <span style={{ color: compareData.vendorB?.rating?.grade === 'A' ? '#34d399' : '#f87171' }}>
-                        {compareData.vendorB?.rating?.grade === 'A' ? '✅ Configured' : '❌ Vulnerable'}
+                      <span
+                        style={{
+                          color:
+                            compareData.vendorB?.rating?.grade === "A"
+                              ? "#34d399"
+                              : "#f87171",
+                        }}
+                      >
+                        {compareData.vendorB?.rating?.grade === "A"
+                          ? "✅ Configured"
+                          : "❌ Vulnerable"}
                       </span>
                     </div>
-                    <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: "0.75rem", paddingRight: "0.75rem", paddingTop: "0.75rem", paddingBottom: "0.75rem", backgroundColor: "#0d1527", border: "1px solid #1e293b", borderRadius: "0.75rem" }}>
-                      <span style={{ color: "#94a3b8" }}>DNS Anti-Spoofing</span>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        paddingLeft: "0.75rem",
+                        paddingRight: "0.75rem",
+                        paddingTop: "0.75rem",
+                        paddingBottom: "0.75rem",
+                        backgroundColor: "#0d1527",
+                        border: "1px solid #1e293b",
+                        borderRadius: "0.75rem",
+                      }}
+                    >
+                      <span style={{ color: "#94a3b8" }}>
+                        DNS Anti-Spoofing
+                      </span>
                       <span style={{ color: "#34d399" }}>✅ Secured</span>
                     </div>
                   </div>
                 </div>
-
               </div>
 
               {/* Exit Comparison Button */}
               <button
-                onClick={() => setIsComparing(false)}
+                onClick={() => {
+                  setIsComparing(false);
+                  setSelectedCompareDomains([]);
+                }}
                 style={{
                   marginTop: "2rem",
                   padding: "0.75rem 1.5rem",
