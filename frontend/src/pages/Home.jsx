@@ -12,6 +12,7 @@ import {
   Moon,
 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
+import NetworkCanvas from "../components/NetworkCanvas";
 
 function Home() {
   const { isDark, toggle } = useTheme();
@@ -96,8 +97,9 @@ function Home() {
       </nav>
 
       {/* ─── HERO ─── */}
-      <main className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pt-32 pb-24 md:pt-44 flex flex-col md:flex-row items-center gap-16 relative z-10">
-        <div className="flex-1 text-center md:text-left">
+      <main className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pt-32 pb-24 md:pt-44 flex flex-col md:flex-row items-center gap-16 relative">
+        <NetworkCanvas />
+        <div className="flex-1 text-center md:text-left relative z-[2]">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full text-xs font-medium mb-6 animate-pulse">
             <Activity className="w-3.5 h-3.5" /> Supply-Chain Threat Monitoring Active
           </div>
@@ -138,7 +140,7 @@ function Home() {
         </div>
 
         {/* Hero orb */}
-        <div className="flex-1 w-full flex justify-center relative">
+        <div className="flex-1 w-full flex justify-center relative z-[2]">
           <div className="w-[280px] h-[280px] sm:w-[360px] sm:h-[360px] rounded-full relative bg-gradient-to-br from-emerald-500/20 via-teal-500/10 to-transparent flex items-center justify-center p-8 border border-emerald-500/20 shadow-[0_0_80px_rgba(16,185,129,0.15)] animate-[spin_60s_linear_infinite]">
             <div
               className="w-full h-full rounded-full flex flex-col items-center justify-center relative shadow-2xl text-center p-4"
