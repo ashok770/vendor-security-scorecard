@@ -7,6 +7,7 @@ require("dotenv").config();
 
 const Scan = require("./models/Scan");
 const authRoutes = require('./routes/auth');
+const { sendRiskAlertEmail } = require('./utils/alert');
 
 const app = (report) => express();
 const appInstance = express();
@@ -59,9 +60,19 @@ appInstance.post("/api/scan", (req, res) => {
       });
 
       await newScan.save();
-      console.log(
-        `Uploaded fresh scorecard to Atlas cloud for: ${sanitizedDomain} 💾`,
-      );
+      console.log(`Uploaded fresh scorecard to Atlas cloud for: ${sanitizedDomain} 💾`);
+
+      // Fire alert email for D or F grade vendors — non-blocking
+      const grade = scorecardData.rating?.grade;
+      if (grade === "D" || grade === "F") {
+        const missingHeaders = [];
+        const headers = scorecardData.security_headers || {};
+        if (!headers["Strict-Transport-Security"] || headers["Strict-Transport-Security"]?.status !== "Secure")
+          missingHeaders.push("HSTS (Strict-Transport-Security)");
+        if (!headers["Content-Security-Policy"] || headers["Content-Security-Policy"]?.status !== "Secure")
+          missingHeaders.push("CSP (Content-Security-Policy)");
+        if (userEmail) sendRiskAlertEmail(userEmail, scorecardData.domain, grade, missingHeaders);
+      }
 
       return res.json(scorecardData);
     } catch (parseError) {

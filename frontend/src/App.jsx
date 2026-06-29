@@ -323,6 +323,37 @@ function DashboardSuite() {
       {/* Metrics Scorecard Visual Panel Cards Render Area Block */}
       {scanResult && (
         <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+
+          {/* HIGH-VISIBILITY THREAT BANNER */}
+          {(scanResult.rating?.grade === "D" || scanResult.rating?.grade === "F") && (
+            <div style={{
+              padding: "1rem 1.25rem",
+              backgroundColor: "rgba(239,68,68,0.08)",
+              border: "1px solid rgba(239,68,68,0.25)",
+              borderRadius: "16px",
+              display: "flex",
+              alignItems: "flex-start",
+              gap: "1rem",
+              position: "relative",
+              overflow: "hidden",
+              boxShadow: "0 8px 32px rgba(127,29,29,0.2)",
+            }}>
+              {/* left accent bar */}
+              <div style={{ position: "absolute", top: 0, left: 0, bottom: 0, width: "4px", backgroundColor: "#ef4444", borderRadius: "4px 0 0 4px" }} />
+              <div style={{ padding: "0.4rem", backgroundColor: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: "10px", marginLeft: "0.5rem", flexShrink: 0 }}>
+                <AlertTriangle size={18} style={{ color: "#f87171", animation: "pulse 2s infinite" }} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.35rem" }}>
+                  <span style={{ fontWeight: "700", fontSize: "0.85rem", color: "#fca5a5" }}>Critical Threat Exposure Detected</span>
+                  <span style={{ fontSize: "0.62rem", backgroundColor: "rgba(239,68,68,0.2)", color: "#f87171", padding: "0.1rem 0.5rem", borderRadius: "999px", fontFamily: "monospace", fontWeight: "700", letterSpacing: "0.05em" }}>EMAIL DISPATCHED</span>
+                </div>
+                <p style={{ margin: 0, fontSize: "0.78rem", color: "rgba(252,165,165,0.8)", lineHeight: "1.5", fontWeight: "300" }}>
+                  This vendor fails foundational security compliance perimeters. Critical headers are absent, exposing the infrastructure to spoofing and data extraction. An executive summary has been sent to your account email.
+                </p>
+              </div>
+            </div>
+          )}
           <div
             className="crypto-card"
             style={{
