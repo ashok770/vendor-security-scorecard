@@ -1,36 +1,17 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  background-color: #0f172a; /* Sleek Dark Slate */
-  color: #f8fafc;
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --color-cyberDark: #0b0f19;
+  --color-cyberCard: #131c2e;
+  --color-cyberGreen: #10b981;
 }
 
 body {
   margin: 0;
-  display: flex;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-#root {
-  width: 100%;
-}
-
-/* Custom styles for our security cards */
-.crypto-card {
-  background: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-}
-
-.grade-badge {
-  font-size: 3rem;
-  font-weight: 800;
-  width: 80px;
-  height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: #0b0f19;
+  color: #f8fafc;
+  overflow-x: hidden;
 }
