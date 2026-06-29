@@ -8,10 +8,46 @@
   --color-cyberGreen: #10b981;
 }
 
+/* ── DARK MODE (default) ── */
+:root,
+[data-theme="dark"] {
+  --bg-base:        #060913;
+  --bg-nav:         #0c1222b3;
+  --bg-card:        #0c122280;
+  --bg-card-inner:  #0d1527;
+  --bg-input:       #1e293b;
+  --bg-code:        #0f172a;
+  --border-color:   #1e293b;
+  --border-subtle:  #334155;
+  --text-primary:   #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted:     #64748b;
+  --orb1:           rgba(16,185,129,0.10);
+  --orb2:           rgba(56,189,248,0.08);
+}
+
+/* ── LIGHT MODE ── */
+[data-theme="light"] {
+  --bg-base:        #f0f4ff;
+  --bg-nav:         #ffffffcc;
+  --bg-card:        #ffffffcc;
+  --bg-card-inner:  #eef2ff;
+  --bg-input:       #ffffff;
+  --bg-code:        #e2e8f0;
+  --border-color:   #cbd5e1;
+  --border-subtle:  #94a3b8;
+  --text-primary:   #0f172a;
+  --text-secondary: #475569;
+  --text-muted:     #64748b;
+  --orb1:           rgba(16,185,129,0.12);
+  --orb2:           rgba(56,189,248,0.10);
+}
+
 body {
   margin: 0;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  background-color: #0b0f19;
-  color: #f8fafc;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }

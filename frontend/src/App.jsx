@@ -4,6 +4,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Login from "./pages/Login";
+import { ThemeProvider } from "./context/ThemeContext";
 
 // Import our original dashboard modules
 import {
@@ -92,10 +93,9 @@ function DashboardSuite() {
   return (
     <div
       style={{
-        padding: "2rem",
-        maxWidth: "1200px",
-        margin: "0 auto",
+        padding: "2rem 4rem",
         width: "100%",
+        boxSizing: "border-box",
       }}
     >
       {/* Dynamic Identity Management Dashboard Header Banner Bar */}
@@ -554,6 +554,7 @@ function DashboardSuite() {
 // WRAP MULTI-PAGE APPLICATION ARCHITECTURE IN GLOBAL ROUTING ROUTER MODULE
 function App() {
   return (
+    <ThemeProvider>
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <BrowserRouter>
         <Routes>
@@ -571,6 +572,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </GoogleOAuthProvider>
+    </ThemeProvider>
   );
 }
 

@@ -8,73 +8,108 @@ import {
   ArrowRight,
   Activity,
   ChevronRight,
+  Sun,
+  Moon,
 } from "lucide-react";
+import { useTheme } from "../context/ThemeContext";
 
 function Home() {
-  return (
-    <div className="min-h-screen bg-[#060913] text-slate-100 relative overflow-hidden selection:bg-emerald-500/30">
-      {/* BACKGROUND DECORATION ORB: Gives that high-end glowing background depth from your sample image */}
-      <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-gradient-to-br from-emerald-500/10 to-teal-500/0 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute top-[40%] right-[-10%] w-[500px] h-[500px] bg-gradient-to-br from-sky-500/10 to-purple-500/0 rounded-full blur-[100px] pointer-events-none" />
+  const { isDark, toggle } = useTheme();
 
-      {/* ─── PREMIUM FLOATING NAVBAR ─── */}
-      <nav className="fixed top-4 left-1/2 -translate-x-1/2 w-[92%] max-w-6xl h-16 bg-[#0c1222]/70 backdrop-blur-md border border-slate-800/60 rounded-2xl flex items-center justify-between px-6 z-50 shadow-2xl shadow-black/40">
+  return (
+    <div
+      className="min-h-screen relative overflow-hidden selection:bg-emerald-500/30"
+      style={{ backgroundColor: "var(--bg-base)", color: "var(--text-primary)" }}
+    >
+      {/* Background orbs */}
+      <div
+        className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full blur-[120px] pointer-events-none"
+        style={{ background: `radial-gradient(circle, var(--orb1), transparent)` }}
+      />
+      <div
+        className="absolute top-[40%] right-[-10%] w-[500px] h-[500px] rounded-full blur-[100px] pointer-events-none"
+        style={{ background: `radial-gradient(circle, var(--orb2), transparent)` }}
+      />
+
+      {/* ─── NAVBAR ─── */}
+      <nav
+        className="fixed top-4 left-1/2 -translate-x-1/2 w-[92%] max-w-6xl h-16 backdrop-blur-md rounded-2xl flex items-center justify-between px-6 z-50 shadow-2xl shadow-black/20"
+        style={{
+          backgroundColor: "var(--bg-nav)",
+          borderColor: "var(--border-color)",
+          border: "1px solid var(--border-color)",
+        }}
+      >
+        {/* Logo */}
         <div className="flex items-center gap-2">
           <div className="p-2 bg-emerald-500/10 rounded-lg border border-emerald-500/20">
             <Shield className="w-5 h-5 text-emerald-400" />
           </div>
-          <span className="font-bold tracking-tight text-lg bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+          <span className="font-bold tracking-tight text-lg bg-gradient-to-r from-emerald-400 via-teal-400 to-sky-400 bg-clip-text text-transparent">
             RISK SENTINEL
           </span>
-          <span className="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-mono border border-slate-700/50">
+          <span
+            className="text-[10px] px-2 py-0.5 rounded-full font-mono"
+            style={{
+              backgroundColor: "var(--bg-card-inner)",
+              color: "var(--text-muted)",
+              border: "1px solid var(--border-subtle)",
+            }}
+          >
             v2.1
           </span>
         </div>
 
-        {/* Navigation Links */}
-        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
-          <Link to="/" className="text-emerald-400 transition-colors">
-            Home
-          </Link>
-          <Link to="/about" className="hover:text-slate-200 transition-colors">
-            Technical Stack
-          </Link>
-          <a
-            href="#features"
-            className="hover:text-slate-200 transition-colors"
-          >
-            Core Engine
-          </a>
+        {/* Nav links */}
+        <div className="hidden md:flex items-center gap-8 text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
+          <Link to="/" className="hover:text-emerald-400 transition-colors">Home</Link>
+          <Link to="/about" className="hover:text-emerald-400 transition-colors">About Us</Link>
+          <a href="#features" className="hover:text-emerald-400 transition-colors">Core Engine</a>
         </div>
 
-        {/* CTA Button */}
-        <div>
+        {/* Right side: theme toggle + sign in */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={toggle}
+            className="p-2 rounded-xl transition-all border"
+            style={{
+              backgroundColor: "var(--bg-card-inner)",
+              borderColor: "var(--border-color)",
+              color: "var(--text-secondary)",
+            }}
+            title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          >
+            {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-500" />}
+          </button>
           <Link
             to="/login"
-            className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold tracking-wide border border-slate-700/60 transition-all shadow-inner"
+            className="px-4 py-2 rounded-xl text-xs font-semibold tracking-wide transition-all"
+            style={{
+              backgroundColor: "var(--bg-card-inner)",
+              color: "var(--text-primary)",
+              border: "1px solid var(--border-color)",
+            }}
           >
             Sign In
           </Link>
         </div>
       </nav>
 
-      {/* ─── HERO HERO SECTION (ASYNCHRONIC SPLIT DESIGN) ─── */}
-      <main className="max-w-6xl mx-auto px-6 pt-32 pb-24 md:pt-44 flex flex-col md:flex-row items-center gap-16 relative z-10">
-        {/* Left Side: Dynamic Copywriting block */}
+      {/* ─── HERO ─── */}
+      <main className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pt-32 pb-24 md:pt-44 flex flex-col md:flex-row items-center gap-16 relative z-10">
         <div className="flex-1 text-center md:text-left">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full text-xs font-medium mb-6 animate-pulse">
-            <Activity className="w-3.5 h-3.5" /> Supply-Chain Threat Monitoring
-            Active
+            <Activity className="w-3.5 h-3.5" /> Supply-Chain Threat Monitoring Active
           </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.1] mb-6">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] mb-6" style={{ color: "var(--text-primary)" }}>
             Results-Driven <br />
             <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-sky-400 bg-clip-text text-transparent">
               Vendor Risk Intelligence
             </span>
           </h1>
 
-          <p className="text-base sm:text-lg text-slate-400 max-w-xl mx-auto md:mx-0 mb-8 leading-relaxed font-normal">
+          <p className="text-base sm:text-lg max-w-xl mx-auto md:mx-0 mb-8 leading-relaxed font-normal" style={{ color: "var(--text-secondary)" }}>
             Audit third-party vendor safety architectures instantly. Inspect
             cryptographic DNS structures, evaluate HTTP response headers, and
             scan infrastructure nodes across real-time global asset maps.
@@ -90,91 +125,81 @@ function Home() {
             </Link>
             <Link
               to="/about"
-              className="px-6 py-3.5 bg-[#0c1222]/80 hover:bg-[#121b32] text-slate-300 font-semibold rounded-xl text-sm transition-all border border-slate-800 flex items-center justify-center gap-1"
+              className="px-6 py-3.5 font-semibold rounded-xl text-sm transition-all flex items-center justify-center gap-1"
+              style={{
+                backgroundColor: "var(--bg-card)",
+                color: "var(--text-secondary)",
+                border: "1px solid var(--border-color)",
+              }}
             >
-              View Architecture Suite{" "}
-              <ChevronRight className="w-4 h-4 text-slate-500" />
+              View Architecture Suite <ChevronRight className="w-4 h-4" style={{ color: "var(--text-muted)" }} />
             </Link>
           </div>
         </div>
 
-        {/* Right Side: The Premium Visual Feature Orb Display Mock */}
+        {/* Hero orb */}
         <div className="flex-1 w-full flex justify-center relative">
           <div className="w-[280px] h-[280px] sm:w-[360px] sm:h-[360px] rounded-full relative bg-gradient-to-br from-emerald-500/20 via-teal-500/10 to-transparent flex items-center justify-center p-8 border border-emerald-500/20 shadow-[0_0_80px_rgba(16,185,129,0.15)] animate-[spin_60s_linear_infinite]">
-            {/* Inner Floating Identity Sphere Node */}
-            <div className="w-full h-full rounded-full bg-[#0d1527] border border-slate-800 flex flex-col items-center justify-center relative shadow-2xl text-center p-4">
+            <div
+              className="w-full h-full rounded-full flex flex-col items-center justify-center relative shadow-2xl text-center p-4"
+              style={{ backgroundColor: "var(--bg-card-inner)", border: "1px solid var(--border-subtle)" }}
+            >
               <Shield className="w-16 h-16 text-emerald-400 drop-shadow-[0_0_15px_rgba(52,211,153,0.4)] mb-4" />
-              <div className="font-mono text-[11px] text-emerald-500 tracking-widest font-bold">
-                NODE SECURE
-              </div>
-              <div className="text-xs text-slate-400 mt-1 font-light px-4">
+              <div className="font-mono text-[11px] text-emerald-500 tracking-widest font-bold">NODE SECURE</div>
+              <div className="text-xs mt-1 font-light px-4" style={{ color: "var(--text-secondary)" }}>
                 Continuous Passive System Sweeping Engine Active
               </div>
             </div>
-
-            {/* Orbiting Satellite Node Accents */}
-            <div className="absolute top-4 right-4 p-2 bg-[#0c1222] border border-slate-800 rounded-xl shadow-xl">
+            <div className="absolute top-4 right-4 p-2 rounded-xl shadow-xl" style={{ backgroundColor: "var(--bg-card-inner)", border: "1px solid var(--border-color)" }}>
               <Terminal className="w-4 h-4 text-sky-400" />
             </div>
-            <div className="absolute bottom-8 left-0 p-2 bg-[#0c1222] border border-slate-800 rounded-xl shadow-xl">
+            <div className="absolute bottom-8 left-0 p-2 rounded-xl shadow-xl" style={{ backgroundColor: "var(--bg-card-inner)", border: "1px solid var(--border-color)" }}>
               <Database className="w-4 h-4 text-purple-400" />
             </div>
           </div>
         </div>
       </main>
 
-      {/* ─── FEATURES SUB SECTION ─── */}
-      <section
-        id="features"
-        className="max-w-6xl mx-auto px-6 pb-32 relative z-10"
-      >
-        <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-slate-800 to-transparent mb-20" />
+      {/* ─── FEATURES ─── */}
+      <section id="features" className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pb-32 relative z-10">
+        <div className="w-full h-[1px] mb-20" style={{ background: `linear-gradient(to right, transparent, var(--border-subtle), transparent)` }} />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Card 1 */}
-          <div className="bg-[#0c1222]/50 border border-slate-800/80 rounded-2xl p-6 hover:border-slate-700/60 transition-all hover:-translate-y-1 duration-300 group">
-            <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center mb-5 text-sky-400 group-hover:bg-sky-500/20 transition-all">
-              <ShieldCheck className="w-5 h-5" />
+          {[
+            {
+              icon: <ShieldCheck className="w-5 h-5" />,
+              color: "sky",
+              title: "Configuration Security",
+              desc: "Scans network perimeter headers natively to evaluate runtime protection including strict content guidelines (CSP), HSTS enforcement, and cross-framing defensive controls.",
+            },
+            {
+              icon: <Terminal className="w-5 h-5" />,
+              color: "purple",
+              title: "Spoofing Protection",
+              desc: "Queries DNS zones to detect active cryptographic alignment rules, guaranteeing compliance across published global structural protocols.",
+            },
+            {
+              icon: <Database className="w-5 h-5" />,
+              color: "amber",
+              title: "Threat Intelligence",
+              desc: "Connects directly to indexed system intelligence parameters to extract server versioning flaws, open listening ports, and infrastructure exposures on external target endpoints.",
+            },
+          ].map(({ icon, color, title, desc }) => (
+            <div
+              key={title}
+              className="rounded-2xl p-6 transition-all hover:-translate-y-1 duration-300 group"
+              style={{
+                backgroundColor: "var(--bg-card)",
+                border: "1px solid var(--border-color)",
+              }}
+            >
+              <div className={`w-10 h-10 rounded-xl bg-${color}-500/10 border border-${color}-500/20 flex items-center justify-center mb-5 text-${color}-400 group-hover:bg-${color}-500/20 transition-all`}>
+                {icon}
+              </div>
+              <h3 className="text-lg font-bold mb-2" style={{ color: "var(--text-primary)" }}>{title}</h3>
+              <p className="text-sm leading-relaxed font-light" style={{ color: "var(--text-secondary)" }}>{desc}</p>
             </div>
-            <h3 className="text-lg font-bold text-white mb-2">
-              Configuration Security
-            </h3>
-            <p className="text-slate-400 text-sm leading-relaxed font-light">
-              Scans network perimeter headers natively to evaluate runtime
-              protection including strict content guidelines (CSP), HSTS
-              enforcement, and cross-framing defensive controls.
-            </p>
-          </div>
-
-          {/* Card 2 */}
-          <div className="bg-[#0c1222]/50 border border-slate-800/80 rounded-2xl p-6 hover:border-slate-700/60 transition-all hover:-translate-y-1 duration-300 group">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-5 text-purple-400 group-hover:bg-purple-500/20 transition-all">
-              <Terminal className="w-5 h-5" />
-            </div>
-            <h3 className="text-lg font-bold text-white mb-2">
-              Spoofing Protection
-            </h3>
-            <p className="text-slate-400 text-sm leading-relaxed font-light">
-              Queries DNS zones to detect active cryptographic alignment rules,
-              guaranteeing compliance across published global structural
-              protocols.
-            </p>
-          </div>
-
-          {/* Card 3 */}
-          <div className="bg-[#0c1222]/50 border border-slate-800/80 rounded-2xl p-6 hover:border-slate-700/60 transition-all hover:-translate-y-1 duration-300 group">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-5 text-amber-400 group-hover:bg-amber-500/20 transition-all">
-              <Database className="w-5 h-5" />
-            </div>
-            <h3 className="text-lg font-bold text-white mb-2">
-              Threat Intelligence
-            </h3>
-            <p className="text-slate-400 text-sm leading-relaxed font-light">
-              Connects directly to indexed system intelligence parameters to
-              extract server versioning flaws, open listening ports, and
-              infrastructure exposures on external target endpoints.
-            </p>
-          </div>
+          ))}
         </div>
       </section>
     </div>
