@@ -1,163 +1,162 @@
 import { useEffect, useRef } from "react";
+import { useTheme } from "../context/ThemeContext";
 
-const NODE_COUNT_BASE = 80;        // nodes on desktop
-const CONNECTION_DIST = 160;       // max px to draw a line between nodes
-const MOUSE_ATTRACT_DIST = 180;    // px radius of mouse influence
-const MOUSE_FORCE = 0.012;         // strength of mouse pull
-const FLOAT_SPEED = 0.35;          // max px/frame drift
-const LINE_OPACITY = 0.18;         // max line alpha
-const NODE_OPACITY = 0.55;         // node fill alpha
-const NODE_RADIUS_MIN = 1.2;
-const NODE_RADIUS_MAX = 2.8;
+// ── tuning ──────────────────────────────────────────────
+const NODE_COUNT      = 110;
+const CONNECTION_DIST = 200;
+const MOUSE_DIST      = 220;
+const MOUSE_FORCE     = 0.018;
+const FLOAT_SPEED     = 0.4;
+const NODE_R_MIN      = 2;
+const NODE_R_MAX      = 4.5;
+// ────────────────────────────────────────────────────────
 
-// brand palette — green / cyan / teal
-const PALETTE = ["#10b981", "#34d399", "#2dd4bf", "#22d3ee", "#6ee7b7"];
+const DARK_PALETTE  = ["#10b981", "#34d399", "#2dd4bf", "#22d3ee", "#6ee7b7", "#5eead4"];
+const LIGHT_PALETTE = ["#059669", "#0d9488", "#0891b2", "#10b981", "#0f766e", "#0e7490"];
 
-function randomBetween(a, b) {
-  return a + Math.random() * (b - a);
-}
-
-function hexToRgb(hex) {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return `${r},${g},${b}`;
+function rnd(a, b) { return a + Math.random() * (b - a); }
+function hexRgb(hex) {
+  return `${parseInt(hex.slice(1,3),16)},${parseInt(hex.slice(3,5),16)},${parseInt(hex.slice(5,7),16)}`;
 }
 
 export default function NetworkCanvas() {
   const canvasRef = useRef(null);
-  const stateRef = useRef({
-    nodes: [],
-    mouse: { x: -9999, y: -9999 },
-    raf: null,
-    width: 0,
-    height: 0,
-  });
+  const state     = useRef({ nodes:[], mouse:{x:-9999,y:-9999}, raf:null, w:0, h:0 });
+  const { isDark } = useTheme();
+  const isDarkRef  = useRef(isDark);
+
+  // keep ref in sync so the draw loop sees latest value without re-mounting
+  useEffect(() => { isDarkRef.current = isDark; }, [isDark]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    const state = stateRef.current;
+    const ctx    = canvas.getContext("2d");
+    const s      = state.current;
 
-    /* ── resize ── */
     function resize() {
-      const rect = canvas.parentElement.getBoundingClientRect();
-      state.width = rect.width;
-      state.height = rect.height;
-      canvas.width = state.width;
-      canvas.height = state.height;
-      spawnNodes();
+      const p  = canvas.parentElement.getBoundingClientRect();
+      s.w      = p.width;
+      s.h      = p.height;
+      canvas.width  = s.w;
+      canvas.height = s.h;
+      spawn();
     }
 
-    /* ── spawn ── */
-    function spawnNodes() {
-      const density = (state.width * state.height) / (1920 * 900);
-      const count = Math.round(NODE_COUNT_BASE * Math.max(0.4, density));
-      state.nodes = Array.from({ length: count }, () => ({
-        x: randomBetween(0, state.width),
-        y: randomBetween(0, state.height),
-        vx: randomBetween(-FLOAT_SPEED, FLOAT_SPEED),
-        vy: randomBetween(-FLOAT_SPEED, FLOAT_SPEED),
-        r: randomBetween(NODE_RADIUS_MIN, NODE_RADIUS_MAX),
-        color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
-        pulse: randomBetween(0, Math.PI * 2),
-        pulseSpeed: randomBetween(0.008, 0.022),
+    function spawn() {
+      const scale = (s.w * s.h) / (1440 * 800);
+      const count = Math.round(NODE_COUNT * Math.max(0.5, scale));
+      s.nodes = Array.from({ length: count }, () => ({
+        x:          rnd(0, s.w),
+        y:          rnd(0, s.h),
+        vx:         rnd(-FLOAT_SPEED, FLOAT_SPEED),
+        vy:         rnd(-FLOAT_SPEED, FLOAT_SPEED),
+        r:          rnd(NODE_R_MIN, NODE_R_MAX),
+        colorIdx:   Math.floor(Math.random() * DARK_PALETTE.length),
+        phase:      rnd(0, Math.PI * 2),
+        phaseSpeed: rnd(0.01, 0.025),
       }));
     }
 
-    /* ── mouse ── */
-    function onMouseMove(e) {
-      const rect = canvas.getBoundingClientRect();
-      state.mouse.x = e.clientX - rect.left;
-      state.mouse.y = e.clientY - rect.top;
+    function onMove(e) {
+      const r    = canvas.getBoundingClientRect();
+      s.mouse.x  = e.clientX - r.left;
+      s.mouse.y  = e.clientY - r.top;
     }
-    function onMouseLeave() {
-      state.mouse.x = -9999;
-      state.mouse.y = -9999;
-    }
+    function onLeave() { s.mouse.x = -9999; s.mouse.y = -9999; }
 
-    /* ── draw loop ── */
     function draw() {
-      const { width, height, nodes, mouse } = state;
-      ctx.clearRect(0, 0, width, height);
+      const { w, h, nodes, mouse } = s;
+      const dark    = isDarkRef.current;
+      const palette = dark ? DARK_PALETTE : LIGHT_PALETTE;
 
-      // update nodes
+      // line / node appearance based on theme
+      const lineOpacityMax = dark ? 0.55 : 0.50;
+      const lineWidth      = dark ? 1.0  : 1.1;
+      const nodeOpacity    = dark ? 0.90 : 0.85;
+      const glowBlur       = dark ? 10   : 8;
+      const glowOpacity    = dark ? 0.35 : 0.30;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // update
       for (const n of nodes) {
-        // mouse attraction
-        const dx = mouse.x - n.x;
-        const dy = mouse.y - n.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < MOUSE_ATTRACT_DIST && dist > 1) {
+        const dx   = mouse.x - n.x;
+        const dy   = mouse.y - n.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < MOUSE_DIST && dist > 1) {
           n.vx += (dx / dist) * MOUSE_FORCE;
           n.vy += (dy / dist) * MOUSE_FORCE;
         }
-
-        // dampen velocity so it doesn't explode
-        n.vx *= 0.98;
-        n.vy *= 0.98;
-
-        // clamp speed
-        const speed = Math.sqrt(n.vx * n.vx + n.vy * n.vy);
-        if (speed > FLOAT_SPEED * 3) {
-          n.vx = (n.vx / speed) * FLOAT_SPEED * 3;
-          n.vy = (n.vy / speed) * FLOAT_SPEED * 3;
-        }
-
+        n.vx *= 0.97;
+        n.vy *= 0.97;
+        const spd = Math.sqrt(n.vx*n.vx + n.vy*n.vy);
+        if (spd > FLOAT_SPEED * 3.5) { n.vx = n.vx/spd * FLOAT_SPEED*3.5; n.vy = n.vy/spd * FLOAT_SPEED*3.5; }
         n.x += n.vx;
         n.y += n.vy;
-        n.pulse += n.pulseSpeed;
-
-        // wrap around edges
-        if (n.x < -20) n.x = width + 20;
-        if (n.x > width + 20) n.x = -20;
-        if (n.y < -20) n.y = height + 20;
-        if (n.y > height + 20) n.y = -20;
+        n.phase += n.phaseSpeed;
+        if (n.x < -30) n.x = w+30; if (n.x > w+30) n.x = -30;
+        if (n.y < -30) n.y = h+30; if (n.y > h+30) n.y = -30;
       }
 
-      // draw connections
+      // connections
       for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const a = nodes[i];
-          const b = nodes[j];
-          const dx = a.x - b.x;
-          const dy = a.y - b.y;
-          const d = Math.sqrt(dx * dx + dy * dy);
+        for (let j = i+1; j < nodes.length; j++) {
+          const a = nodes[i], b = nodes[j];
+          const dx = a.x-b.x, dy = a.y-b.y;
+          const d  = Math.sqrt(dx*dx + dy*dy);
           if (d < CONNECTION_DIST) {
-            const alpha = LINE_OPACITY * (1 - d / CONNECTION_DIST);
+            const t     = 1 - d / CONNECTION_DIST;          // 0..1, stronger when closer
+            const alpha = lineOpacityMax * t * t;            // quadratic falloff
+            const rgb   = hexRgb(palette[a.colorIdx]);
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
-            ctx.strokeStyle = `rgba(${hexToRgb(a.color)},${alpha.toFixed(3)})`;
-            ctx.lineWidth = 0.6;
+            ctx.strokeStyle = `rgba(${rgb},${alpha.toFixed(3)})`;
+            ctx.lineWidth   = lineWidth * t + 0.3;
             ctx.stroke();
           }
         }
       }
 
-      // draw nodes
+      // nodes  (glow + solid dot)
       for (const n of nodes) {
-        const pulseFactor = 0.85 + 0.15 * Math.sin(n.pulse);
-        const alpha = NODE_OPACITY * pulseFactor;
+        const pulse  = 0.8 + 0.2 * Math.sin(n.phase);
+        const r      = n.r * pulse;
+        const rgb    = hexRgb(palette[n.colorIdx]);
+
+        // glow halo
         ctx.beginPath();
-        ctx.arc(n.x, n.y, n.r * pulseFactor, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${hexToRgb(n.color)},${alpha.toFixed(3)})`;
+        ctx.arc(n.x, n.y, r * 3.5, 0, Math.PI*2);
+        const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, r * 3.5);
+        grad.addColorStop(0,   `rgba(${rgb},${glowOpacity})`);
+        grad.addColorStop(1,   `rgba(${rgb},0)`);
+        ctx.fillStyle = grad;
+        ctx.shadowBlur = 0;
         ctx.fill();
+
+        // solid core
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, r, 0, Math.PI*2);
+        ctx.shadowColor = `rgba(${rgb},0.9)`;
+        ctx.shadowBlur  = glowBlur;
+        ctx.fillStyle   = `rgba(${rgb},${nodeOpacity})`;
+        ctx.fill();
+        ctx.shadowBlur  = 0;
       }
 
-      state.raf = requestAnimationFrame(draw);
+      s.raf = requestAnimationFrame(draw);
     }
 
-    // init
     resize();
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseleave", onMouseLeave);
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseleave", onLeave);
     window.addEventListener("resize", resize);
-    state.raf = requestAnimationFrame(draw);
+    s.raf = requestAnimationFrame(draw);
 
     return () => {
-      cancelAnimationFrame(state.raf);
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseleave", onMouseLeave);
+      cancelAnimationFrame(s.raf);
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseleave", onLeave);
       window.removeEventListener("resize", resize);
     };
   }, []);
