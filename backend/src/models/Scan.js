@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const ScanSchema = new mongoose.Schema({
   domain: { type: String, required: true, trim: true },
+  userEmail: { type: String, default: "", trim: true, lowercase: true },
   rating: {
     numeric_score: { type: Number, required: true },
     grade: { type: String, required: true },

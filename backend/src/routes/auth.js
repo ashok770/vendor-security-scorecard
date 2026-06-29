@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { OAuth2Client } = require("google-auth-library");
 const User = require("../models/User");
+const Scan = require("../models/Scan");
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -141,6 +142,20 @@ router.post("/google", async (req, res) => {
     return res
       .status(400)
       .json({ error: "Google verification token is invalid" });
+  }
+});
+
+// 4. GET PAST SCANS FOR THE LOGGED-IN USER
+router.get("/scans/:email", async (req, res) => {
+  try {
+    const { email } = req.params;
+    const history = await Scan.find({ userEmail: email.toLowerCase() })
+      .sort({ scannedAt: -1 })
+      .lean();
+    res.json({ success: true, history });
+  } catch (err) {
+    console.error("Failed to fetch historical ledger ❌:", err);
+    res.status(500).json({ success: false, error: "Internal server registry breakdown" });
   }
 });
 

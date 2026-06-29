@@ -25,7 +25,7 @@ appInstance.get("/api/health", (req, res) => {
 });
 
 appInstance.post("/api/scan", (req, res) => {
-  const { domain } = req.body;
+  const { domain, userEmail } = req.body;
 
   if (!domain) {
     return res.status(400).json({ error: "Domain parameter is required" });
@@ -52,6 +52,7 @@ appInstance.post("/api/scan", (req, res) => {
 
       const newScan = new Scan({
         domain: scorecardData.domain,
+        userEmail: userEmail || "",
         rating: scorecardData.rating,
         security_headers: scorecardData.security_headers,
         dns_security: scorecardData.dns_security,

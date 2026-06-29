@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate, Link } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import Home from "./pages/Home";
@@ -20,6 +20,7 @@ import {
   Activity,
   AlertTriangle,
   LogOut,
+  Clock,
 } from "lucide-react";
 
 // GOOGLE CLIENT ID KEY CONFIGURATION
@@ -38,9 +39,32 @@ function DashboardSuite() {
   const [loading, setLoading] = useState(false);
   const [scanResult, setScanResult] = useState(null);
   const [error, setError] = useState("");
+  const [scanHistory, setScanHistory] = useState([]);
+  const [historyLoading, setHistoryLoading] = useState(true);
 
-  // Parse session metadata to read real identity profile details
   const sessionUser = JSON.parse(localStorage.getItem("sentinel_user") || "{}");
+
+  // fetch history on mount
+  useEffect(() => {
+    if (sessionUser?.email) {
+      fetch(`http://localhost:5000/api/auth/scans/${sessionUser.email}`)
+        .then((r) => r.json())
+        .then((data) => { if (data.success) setScanHistory(data.history); })
+        .catch(() => {})
+        .finally(() => setHistoryLoading(false));
+    } else {
+      setHistoryLoading(false);
+    }
+  }, []);
+
+  // reload history after a new scan completes
+  const refreshHistory = () => {
+    if (!sessionUser?.email) return;
+    fetch(`http://localhost:5000/api/auth/scans/${sessionUser.email}`)
+      .then((r) => r.json())
+      .then((data) => { if (data.success) setScanHistory(data.history); })
+      .catch(() => {});
+  };
 
   const handleScan = async (e) => {
     e.preventDefault();
@@ -53,15 +77,14 @@ function DashboardSuite() {
       const response = await fetch("http://localhost:5000/api/scan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ domain }),
+        body: JSON.stringify({ domain, userEmail: sessionUser.email || "" }),
       });
       const data = await response.json();
       if (response.ok) {
         setScanResult(data);
+        refreshHistory();
       } else {
-        setError(
-          data.error || "Vulnerability scanning runtime interrupt error.",
-        );
+        setError(data.error || "Vulnerability scanning runtime interrupt error.");
       }
     } catch (err) {
       setError("Connection failure reaching threat calculation engine API.");
@@ -91,13 +114,71 @@ function DashboardSuite() {
   };
 
   return (
-    <div
-      style={{
-        padding: "2rem 4rem",
-        width: "100%",
-        boxSizing: "border-box",
-      }}
-    >
+    <div style={{ display: "flex", height: "100vh", backgroundColor: "#060913", color: "#f8fafc", overflow: "hidden" }}>
+
+      {/* ─── LEFT SIDEBAR: HISTORY LEDGER ─── */}
+      <aside style={{
+        width: "260px",
+        flexShrink: 0,
+        backgroundColor: "#0c1222",
+        borderRight: "1px solid #1e293b",
+        display: "flex",
+        flexDirection: "column",
+        padding: "1.5rem 1rem",
+        overflowY: "auto",
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1.25rem", paddingLeft: "0.25rem" }}>
+          <Clock size={14} style={{ color: "#34d399" }} />
+          <span style={{ fontSize: "0.7rem", fontWeight: "700", letterSpacing: "0.1em", textTransform: "uppercase", color: "#64748b" }}>Monitored Vendors</span>
+        </div>
+
+        {historyLoading ? (
+          <p style={{ fontSize: "0.75rem", color: "#475569", padding: "0.5rem" }} className="animate-pulse">Querying Atlas cluster...</p>
+        ) : scanHistory.length === 0 ? (
+          <p style={{ fontSize: "0.75rem", color: "#475569", fontStyle: "italic", padding: "0.75rem", border: "1px dashed #1e293b", borderRadius: "10px" }}>
+            No scans yet. Run your first assessment.
+          </p>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+            {scanHistory.map((scan) => (
+              <button
+                key={scan._id}
+                onClick={() => setScanResult(scan)}
+                style={{
+                  width: "100%",
+                  textAlign: "left",
+                  padding: "0.75rem",
+                  borderRadius: "10px",
+                  border: scanResult?.domain === scan.domain ? "1px solid rgba(16,185,129,0.4)" : "1px solid #1e293b",
+                  backgroundColor: scanResult?.domain === scan.domain ? "rgba(16,185,129,0.08)" : "#0d1527",
+                  cursor: "pointer",
+                  transition: "all 0.15s",
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
+                  <span style={{ fontSize: "0.82rem", fontWeight: "600", color: "#e2e8f0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "130px" }}>
+                    {scan.domain}
+                  </span>
+                  <span style={{
+                    fontSize: "0.65rem", fontWeight: "700", padding: "0.15rem 0.4rem", borderRadius: "4px",
+                    backgroundColor: scan.rating?.grade === "A" ? "rgba(16,185,129,0.15)" : "rgba(245,158,11,0.15)",
+                    color: scan.rating?.grade === "A" ? "#34d399" : "#fbbf24",
+                  }}>
+                    {scan.rating?.grade || "N/A"}
+                  </span>
+                </div>
+                <span style={{ fontSize: "0.68rem", color: "#475569", fontFamily: "monospace" }}>
+                  {new Date(scan.scannedAt).toLocaleDateString()}
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
+      </aside>
+
+      {/* ─── MAIN CONTENT ─── */}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflowY: "auto" }}>
+      <div style={{ padding: "2rem 3rem", width: "100%", boxSizing: "border-box" }}>
       {/* Dynamic Identity Management Dashboard Header Banner Bar */}
       <header
         style={{
@@ -547,6 +628,8 @@ function DashboardSuite() {
           </div>
         </div>
       )}
+      </div>
+      </div>
     </div>
   );
 }
