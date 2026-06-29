@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import html2pdf from 'html2pdf.js';
 import { BrowserRouter, Routes, Route, Navigate, Link } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import Home from "./pages/Home";
@@ -112,6 +113,59 @@ function DashboardSuite() {
     localStorage.clear();
     window.location.href = "/";
   };
+
+  const handleExportPDF = () => {
+    if (!scanResult) return;
+    const element = document.getElementById('scorecard-report-view');
+
+    // Inject a temporary <style> that replaces all oklch() values with safe hex colors.
+    // html2canvas (used by html2pdf) does not support the oklch() color function
+    // used by Tailwind v4, so we patch for the duration of capture then remove.
+    const patch = document.createElement('style');
+    patch.id = '__pdf_patch__';
+    patch.textContent = `
+      #scorecard-report-view, #scorecard-report-view * {
+        color: #e2e8f0 !important;
+        border-color: #334155 !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+      }
+      #scorecard-report-view { background-color: #060913 !important; }
+      #scorecard-report-view h2,
+      #scorecard-report-view h3,
+      #scorecard-report-view h4,
+      #scorecard-report-view strong { color: #f8fafc !important; }
+      #scorecard-report-view small,
+      #scorecard-report-view p { color: #94a3b8 !important; }
+    `;
+    document.head.appendChild(patch);
+
+    const options = {
+      margin:      0.4,
+      filename:    `risk_sentinel_report_${scanResult.domain}.pdf`,
+      image:       { type: 'jpeg', quality: 0.97 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#060913',
+        logging: false,
+        scrollX: 0,
+        scrollY: -window.scrollY,
+      },
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+    };
+
+    html2pdf()
+      .set(options)
+      .from(element)
+      .save()
+      .finally(() => {
+        const p = document.getElementById('__pdf_patch__');
+        if (p) p.remove();
+      });
+  };
+
 
   return (
     <div style={{ display: "flex", height: "100vh", backgroundColor: "#060913", color: "#f8fafc", overflow: "hidden" }}>
@@ -241,6 +295,31 @@ function DashboardSuite() {
             </small>
           </div>
           <button
+            onClick={handleExportPDF}
+            disabled={!scanResult}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.4rem",
+              padding: "0.4rem 0.85rem",
+              backgroundColor: "#0c1222",
+              color: "#cbd5e1",
+              border: "1px solid #334155",
+              borderRadius: "8px",
+              cursor: scanResult ? "pointer" : "not-allowed",
+              fontSize: "0.78rem",
+              fontWeight: "600",
+              letterSpacing: "0.03em",
+              opacity: scanResult ? 1 : 0.45,
+              transition: "all 0.15s",
+            }}
+          >
+            <svg style={{ width: "14px", height: "14px", color: "#34d399" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Export PDF
+          </button>
+          <button
             onClick={handleLogout}
             style={{
               display: "flex",
@@ -322,7 +401,7 @@ function DashboardSuite() {
 
       {/* Metrics Scorecard Visual Panel Cards Render Area Block */}
       {scanResult && (
-        <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+        <div id="scorecard-report-view" style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
 
           {/* HIGH-VISIBILITY THREAT BANNER */}
           {(scanResult.rating?.grade === "D" || scanResult.rating?.grade === "F") && (
