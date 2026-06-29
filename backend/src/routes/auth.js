@@ -159,4 +159,16 @@ router.get("/scans/:email", async (req, res) => {
   }
 });
 
+// 5. DELETE A SCAN BY ID
+router.delete("/scans/:id", async (req, res) => {
+  try {
+    const deleted = await Scan.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ success: false, error: "Scan not found" });
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Failed to delete scan ❌:", err);
+    res.status(500).json({ success: false, error: "Delete operation failed" });
+  }
+});
+
 module.exports = router;

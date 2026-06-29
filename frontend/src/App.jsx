@@ -67,6 +67,19 @@ function DashboardSuite() {
       .catch(() => {});
   };
 
+  const handleDeleteScan = (e, scanId) => {
+    e.stopPropagation();
+    fetch(`http://localhost:5000/api/auth/scans/${scanId}`, { method: "DELETE" })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success) {
+          setScanHistory((prev) => prev.filter((s) => s._id !== scanId));
+          if (scanResult?._id === scanId) setScanResult(null);
+        }
+      })
+      .catch(() => {});
+  };
+
   const handleScan = async (e) => {
     e.preventDefault();
     if (!domain) return;
@@ -195,36 +208,60 @@ function DashboardSuite() {
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
             {scanHistory.map((scan) => (
-              <button
-                key={scan._id}
-                onClick={() => setScanResult(scan)}
-                style={{
-                  width: "100%",
-                  textAlign: "left",
-                  padding: "0.75rem",
-                  borderRadius: "10px",
-                  border: scanResult?.domain === scan.domain ? "1px solid rgba(16,185,129,0.4)" : "1px solid #1e293b",
-                  backgroundColor: scanResult?.domain === scan.domain ? "rgba(16,185,129,0.08)" : "#0d1527",
-                  cursor: "pointer",
-                  transition: "all 0.15s",
-                }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
-                  <span style={{ fontSize: "0.82rem", fontWeight: "600", color: "#e2e8f0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "130px" }}>
-                    {scan.domain}
+              <div key={scan._id} style={{ position: "relative", display: "flex", alignItems: "stretch", gap: "0.35rem" }}>
+                <button
+                  onClick={() => setScanResult(scan)}
+                  style={{
+                    flex: 1,
+                    textAlign: "left",
+                    padding: "0.75rem",
+                    borderRadius: "10px",
+                    border: scanResult?._id === scan._id ? "1px solid rgba(16,185,129,0.4)" : "1px solid #1e293b",
+                    backgroundColor: scanResult?._id === scan._id ? "rgba(16,185,129,0.08)" : "#0d1527",
+                    cursor: "pointer",
+                    transition: "all 0.15s",
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
+                    <span style={{ fontSize: "0.82rem", fontWeight: "600", color: "#e2e8f0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "110px" }}>
+                      {scan.domain}
+                    </span>
+                    <span style={{
+                      fontSize: "0.65rem", fontWeight: "700", padding: "0.15rem 0.4rem", borderRadius: "4px",
+                      backgroundColor: scan.rating?.grade === "A" ? "rgba(16,185,129,0.15)" : "rgba(245,158,11,0.15)",
+                      color: scan.rating?.grade === "A" ? "#34d399" : "#fbbf24",
+                    }}>
+                      {scan.rating?.grade || "N/A"}
+                    </span>
+                  </div>
+                  <span style={{ fontSize: "0.68rem", color: "#475569", fontFamily: "monospace" }}>
+                    {new Date(scan.scannedAt).toLocaleDateString()}
                   </span>
-                  <span style={{
-                    fontSize: "0.65rem", fontWeight: "700", padding: "0.15rem 0.4rem", borderRadius: "4px",
-                    backgroundColor: scan.rating?.grade === "A" ? "rgba(16,185,129,0.15)" : "rgba(245,158,11,0.15)",
-                    color: scan.rating?.grade === "A" ? "#34d399" : "#fbbf24",
-                  }}>
-                    {scan.rating?.grade || "N/A"}
-                  </span>
-                </div>
-                <span style={{ fontSize: "0.68rem", color: "#475569", fontFamily: "monospace" }}>
-                  {new Date(scan.scannedAt).toLocaleDateString()}
-                </span>
-              </button>
+                </button>
+                {/* Delete button */}
+                <button
+                  onClick={(e) => handleDeleteScan(e, scan._id)}
+                  title="Delete scan"
+                  style={{
+                    flexShrink: 0,
+                    width: "28px",
+                    borderRadius: "8px",
+                    border: "1px solid #1e293b",
+                    backgroundColor: "#0d1527",
+                    color: "#475569",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    transition: "all 0.15s",
+                    fontSize: "0.7rem",
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "rgba(239,68,68,0.1)"; e.currentTarget.style.borderColor = "rgba(239,68,68,0.3)"; e.currentTarget.style.color = "#f87171"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#0d1527"; e.currentTarget.style.borderColor = "#1e293b"; e.currentTarget.style.color = "#475569"; }}
+                >
+                  ✕
+                </button>
+              </div>
             ))}
           </div>
         )}
