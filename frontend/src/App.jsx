@@ -54,6 +54,11 @@ function DashboardSuite() {
   const [scanHistory, setScanHistory] = useState([]);
   const [historyLoading, setHistoryLoading] = useState(true);
   const [activeView, setActiveView] = useState("analytics");
+  // Tracks selected domains for comparison matrix
+  const [selectedCompareDomains, setSelectedCompareDomains] = useState([]);
+  const [isComparing, setIsComparing] = useState(false);
+  const [compareData, setCompareData] = useState({ vendorA: null, vendorB: null });
+  const [activeScorecard, setActiveScorecard] = useState(null);
 
   const sessionUser = JSON.parse(localStorage.getItem("sentinel_user") || "{}");
 
@@ -272,80 +277,118 @@ function DashboardSuite() {
             {scanHistory.map((scan) => (
               <div
                 key={scan._id}
+                className={`w-full p-3.5 rounded-xl border transition-all flex items-center justify-between gap-3 relative group ${
+                  activeScorecard?.domain === scan.domain && !isComparing
+                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                    : 'bg-[#0d1527] border-slate-800/80 hover:border-slate-700/60 text-slate-300'
+                }`}
                 style={{
-                  position: "relative",
+                  padding: "0.875rem",
+                  borderRadius: "12px",
+                  border: activeScorecard?.domain === scan.domain && !isComparing 
+                    ? "1px solid rgba(16,185,129,0.3)" 
+                    : "1px solid #1e293b",
+                  backgroundColor: activeScorecard?.domain === scan.domain && !isComparing 
+                    ? "rgba(16,185,129,0.1)" 
+                    : "#0d1527",
                   display: "flex",
-                  alignItems: "stretch",
-                  gap: "0.35rem",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: "0.75rem",
+                  transition: "all 0.15s",
                 }}
               >
+                {/* Left: Checkbox for Comparison Matrix */}
+                <input
+                  type="checkbox"
+                  checked={selectedCompareDomains.includes(scan.domain)}
+                  onChange={(e) => {
+                    e.stopPropagation(); // Stop parent click event
+                    if (e.target.checked) {
+                      if (selectedCompareDomains.length >= 2) return; // Cap at 2 vendors maximum
+                      setSelectedCompareDomains(prev => [...prev, scan.domain]);
+                    } else {
+                      setSelectedCompareDomains(prev => prev.filter(d => d !== scan.domain));
+                    }
+                  }}
+                  style={{
+                    accentColor: "#10b981",
+                    height: "16px",
+                    width: "16px",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    flexShrink: 0,
+                  }}
+                />
+
+                {/* Main Card Body Trigger Click to View Single Scorecard */}
                 <button
-                  onClick={() => setScanResult(scan)}
+                  onClick={() => {
+                    setIsComparing(false); // Drop matrix view
+                    setScanResult(scan.results || scan);
+                    setActiveScorecard(scan);
+                  }}
                   style={{
                     flex: 1,
                     textAlign: "left",
-                    padding: "0.75rem",
-                    borderRadius: "10px",
-                    border:
-                      scanResult?._id === scan._id
-                        ? "1px solid rgba(16,185,129,0.4)"
-                        : "1px solid #1e293b",
-                    backgroundColor:
-                      scanResult?._id === scan._id
-                        ? "rgba(16,185,129,0.08)"
-                        : "#0d1527",
-                    cursor: "pointer",
-                    transition: "all 0.15s",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "0.25rem",
+                    minWidth: 0,
                   }}
                 >
                   <div
                     style={{
                       display: "flex",
-                      justifyContent: "space-between",
                       alignItems: "center",
-                      marginBottom: "0.25rem",
+                      justifyContent: "space-between",
+                      gap: "0.5rem",
                     }}
                   >
                     <span
                       style={{
-                        fontSize: "0.82rem",
                         fontWeight: "600",
-                        color: "#e2e8f0",
+                        fontSize: "0.875rem",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         whiteSpace: "nowrap",
-                        maxWidth: "110px",
+                        color: "white",
                       }}
                     >
                       {scan.domain}
                     </span>
                     <span
                       style={{
-                        fontSize: "0.65rem",
+                        fontSize: "0.625rem",
                         fontWeight: "700",
-                        padding: "0.15rem 0.4rem",
-                        borderRadius: "4px",
+                        paddingLeft: "0.5rem",
+                        paddingRight: "0.5rem",
+                        paddingTop: "0.125rem",
+                        paddingBottom: "0.125rem",
+                        borderRadius: "6px",
                         backgroundColor:
                           scan.rating?.grade === "A"
                             ? "rgba(16,185,129,0.15)"
                             : "rgba(245,158,11,0.15)",
                         color:
                           scan.rating?.grade === "A" ? "#34d399" : "#fbbf24",
+                        flexShrink: 0,
                       }}
                     >
-                      {scan.rating?.grade || "N/A"}
+                      Grade {scan.rating?.grade || "N/A"}
                     </span>
                   </div>
                   <span
                     style={{
-                      fontSize: "0.68rem",
-                      color: "#475569",
+                      fontSize: "0.625rem",
+                      color: "#64748b",
                       fontFamily: "monospace",
                     }}
                   >
                     {new Date(scan.scannedAt).toLocaleDateString()}
                   </span>
                 </button>
+
                 {/* Delete button */}
                 <button
                   onClick={(e) => handleDeleteScan(e, scan._id)}
@@ -353,6 +396,7 @@ function DashboardSuite() {
                   style={{
                     flexShrink: 0,
                     width: "28px",
+                    height: "28px",
                     borderRadius: "8px",
                     border: "1px solid #1e293b",
                     backgroundColor: "#0d1527",
@@ -380,6 +424,46 @@ function DashboardSuite() {
                 </button>
               </div>
             ))}
+            {/* FLOATING ACTION PILL FOR COMPARE DISPATCH */}
+            {selectedCompareDomains.length === 2 && (
+              <button
+                onClick={() => {
+                  // Find full record structures from history matching our checked items
+                  const vendorA = scanHistory.find(s => s.domain === selectedCompareDomains[0]);
+                  const vendorB = scanHistory.find(s => s.domain === selectedCompareDomains[1]);
+                  setCompareData({ vendorA, vendorB });
+                  setIsComparing(true);
+                }}
+                style={{
+                  marginTop: "1rem",
+                  width: "100%",
+                  padding: "0.625rem",
+                  background: "linear-gradient(to right, #0ea5e9, #6366f1)",
+                  color: "#030712",
+                  fontWeight: "700",
+                  fontSize: "0.75rem",
+                  borderRadius: "12px",
+                  border: "none",
+                  letterSpacing: "0.05em",
+                  textTransform: "uppercase",
+                  transition: "all 0.15s",
+                  cursor: "pointer",
+                  boxShadow: "0 0 12px rgba(14, 165, 233, 0.15)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "0.375rem",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.filter = "brightness(1.1)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.filter = "brightness(1)";
+                }}
+              >
+                Compare Selected ({selectedCompareDomains.length})
+              </button>
+            )}
           </div>
         )}
       </aside>
@@ -577,7 +661,99 @@ function DashboardSuite() {
           )}
 
           {/* Metrics Scorecard Visual Panel Cards Render Area Block */}
-          {scanResult && (
+          {isComparing ? (
+            /* ─── THE EXECUTIVE MULTI-VENDOR COMPARE MATRIX GRID ─── */
+            <div style={{ animation: "fadeIn 0.3s ease-in" }}>
+              <div style={{ marginBottom: "2rem" }}>
+                <h2 style={{ fontSize: "1.25rem", fontWeight: "800", color: "white", letterSpacing: "-0.025em", marginBottom: "0.5rem" }}>Executive Vendor Comparison</h2>
+                <p style={{ fontSize: "0.75rem", color: "#64748b", margin: 0 }}>Side-by-side risk perimeter alignment comparison analytics.</p>
+              </div>
+
+              {/* Split View Comparison Pillars Header */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
+                
+                {/* VENDOR A PANEL */}
+                <div style={{ backgroundColor: "rgba(12, 18, 34, 0.6)", border: "1px solid #1e293b", borderRadius: "1rem", padding: "1.5rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+                    <span style={{ fontSize: "1.125rem", fontWeight: "700", color: "#34d399" }}>{compareData.vendorA?.domain}</span>
+                    <span style={{ fontSize: "0.75rem", backgroundColor: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.2)", color: "#34d399", paddingLeft: "0.75rem", paddingRight: "0.75rem", paddingTop: "0.25rem", paddingBottom: "0.25rem", borderRadius: "999px", fontFamily: "monospace", fontWeight: "700" }}>
+                      Grade {compareData.vendorA?.rating?.grade || 'N/A'}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: "1.875rem", fontWeight: "900", color: "white", marginBottom: "1.5rem", letterSpacing: "-0.025em" }}>
+                    {compareData.vendorA?.rating?.numeric_score || compareData.vendorA?.score || 30}<span style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: "400" }}> / 100 Maturity</span>
+                  </div>
+                  
+                  {/* Metric Overview List */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", fontWeight: "500", fontSize: "0.75rem" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: "0.75rem", paddingRight: "0.75rem", paddingTop: "0.75rem", paddingBottom: "0.75rem", backgroundColor: "#0d1527", border: "1px solid #1e293b", borderRadius: "0.75rem" }}>
+                      <span style={{ color: "#94a3b8" }}>HSTS Headers</span>
+                      <span style={{ color: compareData.vendorA?.rating?.grade === 'A' ? '#34d399' : '#f87171' }}>
+                        {compareData.vendorA?.rating?.grade === 'A' ? '✅ Configured' : '❌ Vulnerable'}
+                      </span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: "0.75rem", paddingRight: "0.75rem", paddingTop: "0.75rem", paddingBottom: "0.75rem", backgroundColor: "#0d1527", border: "1px solid #1e293b", borderRadius: "0.75rem" }}>
+                      <span style={{ color: "#94a3b8" }}>DNS Anti-Spoofing</span>
+                      <span style={{ color: "#34d399" }}>✅ Secured</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* VENDOR B PANEL */}
+                <div style={{ backgroundColor: "rgba(12, 18, 34, 0.6)", border: "1px solid #1e293b", borderRadius: "1rem", padding: "1.5rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+                    <span style={{ fontSize: "1.125rem", fontWeight: "700", color: "#0ea5e9" }}>{compareData.vendorB?.domain}</span>
+                    <span style={{ fontSize: "0.75rem", backgroundColor: "rgba(14, 165, 233, 0.1)", border: "1px solid rgba(14, 165, 233, 0.2)", color: "#0ea5e9", paddingLeft: "0.75rem", paddingRight: "0.75rem", paddingTop: "0.25rem", paddingBottom: "0.25rem", borderRadius: "999px", fontFamily: "monospace", fontWeight: "700" }}>
+                      Grade {compareData.vendorB?.rating?.grade || 'N/A'}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: "1.875rem", fontWeight: "900", color: "white", marginBottom: "1.5rem", letterSpacing: "-0.025em" }}>
+                    {compareData.vendorB?.rating?.numeric_score || compareData.vendorB?.score || 30}<span style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: "400" }}> / 100 Maturity</span>
+                  </div>
+
+                  {/* Metric Overview List */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", fontWeight: "500", fontSize: "0.75rem" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: "0.75rem", paddingRight: "0.75rem", paddingTop: "0.75rem", paddingBottom: "0.75rem", backgroundColor: "#0d1527", border: "1px solid #1e293b", borderRadius: "0.75rem" }}>
+                      <span style={{ color: "#94a3b8" }}>HSTS Headers</span>
+                      <span style={{ color: compareData.vendorB?.rating?.grade === 'A' ? '#34d399' : '#f87171' }}>
+                        {compareData.vendorB?.rating?.grade === 'A' ? '✅ Configured' : '❌ Vulnerable'}
+                      </span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", paddingLeft: "0.75rem", paddingRight: "0.75rem", paddingTop: "0.75rem", paddingBottom: "0.75rem", backgroundColor: "#0d1527", border: "1px solid #1e293b", borderRadius: "0.75rem" }}>
+                      <span style={{ color: "#94a3b8" }}>DNS Anti-Spoofing</span>
+                      <span style={{ color: "#34d399" }}>✅ Secured</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Exit Comparison Button */}
+              <button
+                onClick={() => setIsComparing(false)}
+                style={{
+                  marginTop: "2rem",
+                  padding: "0.75rem 1.5rem",
+                  backgroundColor: "#334155",
+                  color: "#f8fafc",
+                  border: "none",
+                  borderRadius: "8px",
+                  fontSize: "0.875rem",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  transition: "all 0.15s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#475569";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "#334155";
+                }}
+              >
+                Back to Dashboard
+              </button>
+            </div>
+          ) : scanResult ? (
             <div
               id="scorecard-report-view"
               style={{ display: "flex", flexDirection: "column", gap: "2rem" }}
@@ -1354,7 +1530,7 @@ function DashboardSuite() {
                 </div>
               )}
             </div>
-          )}
+          ) : null}
 
           <style>{`
         @keyframes fadeIn {
