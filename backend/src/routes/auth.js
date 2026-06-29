@@ -152,7 +152,9 @@ router.get("/scans/:email", async (req, res) => {
     const history = await Scan.find({ userEmail: email.toLowerCase() })
       .sort({ scannedAt: -1 })
       .lean();
-    res.json({ success: true, history });
+    // Stringify _id so the frontend receives a plain string, not an ObjectId object
+    const normalized = history.map((s) => ({ ...s, _id: s._id.toString() }));
+    res.json({ success: true, history: normalized });
   } catch (err) {
     console.error("Failed to fetch historical ledger ❌:", err);
     res.status(500).json({ success: false, error: "Internal server registry breakdown" });

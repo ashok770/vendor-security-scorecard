@@ -13,7 +13,11 @@ const app = (report) => express();
 const appInstance = express();
 const PORT = process.env.PORT || 5000;
 
-appInstance.use(cors());
+appInstance.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
 appInstance.use(express.json());
 
 mongoose
