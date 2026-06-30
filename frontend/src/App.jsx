@@ -1782,25 +1782,53 @@ function DashboardSuite() {
 }
 
 // WRAP MULTI-PAGE APPLICATION ARCHITECTURE IN GLOBAL ROUTING ROUTER MODULE
+// WRAP MULTI-PAGE APPLICATION ARCHITECTURE IN GLOBAL ROUTING ROUTER MODULE
+function AppRoutes() {
+  const [sessionUser, setSessionUser] = useState(
+    JSON.parse(localStorage.getItem("sentinel_user") || "{}"),
+  );
+  const [authToken, setAuthToken] = useState(
+    localStorage.getItem("sentinel_token") || null,
+  );
+
+  const handleAuthSuccess = (user, token) => {
+    setSessionUser(user);
+    setAuthToken(token);
+    localStorage.setItem("sentinel_token", token);
+    localStorage.setItem("sentinel_user", JSON.stringify(user));
+  };
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route
+          path="/login"
+          element={
+            <Login
+              onAuthSuccess={handleAuthSuccess}
+            />
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardSuite />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
 function App() {
   return (
     <ThemeProvider>
       <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/login" element={<Login />} />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <DashboardSuite />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </BrowserRouter>
+        <AppRoutes />
       </GoogleOAuthProvider>
     </ThemeProvider>
   );
