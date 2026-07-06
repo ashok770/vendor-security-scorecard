@@ -36,8 +36,8 @@ import {
 } from "lucide-react";
 
 // GOOGLE CLIENT ID KEY CONFIGURATION
-const GOOGLE_CLIENT_ID =
-  "64465390574-88ailc5motssvr0msc2mm1sin1ilfvfr.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 // SECURE PROTECTED PATH ACCESS CONTROLLER ROUTE
 const ProtectedRoute = ({ children }) => {
@@ -68,7 +68,7 @@ function DashboardSuite() {
   // fetch history on mount
   useEffect(() => {
     if (sessionUser?.email) {
-      fetch(`http://localhost:5000/api/auth/scans/${sessionUser.email}`)
+      fetch(`${API_BASE}/api/auth/scans/${sessionUser.email}`)
         .then((r) => r.json())
         .then((data) => {
           if (data.success) setScanHistory(data.history);
@@ -83,7 +83,7 @@ function DashboardSuite() {
   // reload history after a new scan completes
   const refreshHistory = () => {
     if (!sessionUser?.email) return;
-    fetch(`http://localhost:5000/api/auth/scans/${sessionUser.email}`)
+    fetch(`${API_BASE}/api/auth/scans/${sessionUser.email}`)
       .then((r) => r.json())
       .then((data) => {
         if (data.success) setScanHistory(data.history);
@@ -93,7 +93,7 @@ function DashboardSuite() {
 
   const handleDeleteScan = (e, scanId) => {
     e.stopPropagation();
-    fetch(`http://localhost:5000/api/auth/scans/${scanId}`, {
+    fetch(`${API_BASE}/api/auth/scans/${scanId}`, {
       method: "DELETE",
     })
       .then((r) => r.json())
@@ -114,7 +114,7 @@ function DashboardSuite() {
     setScanResult(null);
 
     try {
-      const response = await fetch("http://localhost:5000/api/scan", {
+      const response = await fetch(`${API_BASE}/api/scan`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ domain, userEmail: sessionUser.email || "" }),

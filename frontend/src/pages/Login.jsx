@@ -17,8 +17,9 @@ function Login() {
     e.preventDefault();
     setError("");
     const endpoint = isSignUp ? "/api/auth/signup" : "/api/auth/login";
+    const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
     try {
-      const response = await fetch(`http://localhost:5000${endpoint}`, {
+      const response = await fetch(`${BASE_URL}${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -39,7 +40,8 @@ function Login() {
   const handleGoogleSuccess = async (googleResponse) => {
     setError("");
     try {
-      const response = await fetch("http://localhost:5000/api/auth/google", {
+      const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      const response = await fetch(`${BASE_URL}/api/auth/google`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ credential: googleResponse.credential }),
