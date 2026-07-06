@@ -40,7 +40,7 @@ appInstance.post("/api/scan", (req, res) => {
 
   const sanitizedDomain = domain.trim().replace(/[^a-zA-Z0-9.-]/g, "");
   const scriptPath = path.join(__dirname, "../../cyber-engine/core_scanner.py");
-  const command = `conda run -n cyber-engine python "${scriptPath}" ${sanitizedDomain}`;
+  const command = `python3 "${scriptPath}" ${sanitizedDomain}`;
 
   exec(command, async (error, stdout, stderr) => {
     if (error) {

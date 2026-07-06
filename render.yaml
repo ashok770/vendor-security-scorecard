@@ -3,7 +3,7 @@ services:
     name: vendor-security-backend
     runtime: node
     rootDir: backend
-    buildCommand: npm install
+    buildCommand: npm install && pip3 install -r ../cyber-engine/requirements.txt
     startCommand: npm start
     envVars:
       - key: PORT
