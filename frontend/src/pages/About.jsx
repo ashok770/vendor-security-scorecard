@@ -26,12 +26,14 @@ function FAQItem({ question, answer }) {
 function About() {
   return (
     <div
-      className="min-h-screen relative overflow-hidden selection:bg-emerald-500/30"
+      className="min-h-screen relative selection:bg-emerald-500/30"
       style={{ backgroundColor: "var(--bg-base)", color: "var(--text-primary)" }}
     >
-      {/* Decorative orbs */}
-      <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full blur-[120px] pointer-events-none" style={{ background: "radial-gradient(circle, var(--orb1), transparent)" }} />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full blur-[120px] pointer-events-none" style={{ background: "radial-gradient(circle, var(--orb2), transparent)" }} />
+      {/* Decorative orbs — clipped to their own container so they don't affect footer */}
+      <div className="absolute top-0 left-0 right-0 h-screen overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full blur-[120px]" style={{ background: "radial-gradient(circle, var(--orb1), transparent)" }} />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full blur-[120px]" style={{ background: "radial-gradient(circle, var(--orb2), transparent)" }} />
+      </div>
 
       <div className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pt-32 pb-24 relative z-10">
         {/* Back link */}
