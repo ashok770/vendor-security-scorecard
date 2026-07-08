@@ -46,6 +46,7 @@ function FAQItem({ index, question, answer }) {
 
 function Home() {
   const { isDark, toggle } = useTheme();
+  const [activeTab, setActiveTab] = useState("home");
 
   return (
     <div
@@ -70,54 +71,58 @@ function Home() {
       />
 
       {/* ─── NAVBAR ─── */}
-      <nav
-        className="fixed top-4 left-1/2 -translate-x-1/2 w-[92%] max-w-6xl h-16 backdrop-blur-md rounded-2xl flex items-center justify-between px-6 z-50 shadow-2xl shadow-black/20"
-        style={{
-          backgroundColor: "var(--bg-nav)",
-          borderColor: "var(--border-color)",
-          border: "1px solid var(--border-color)",
-        }}
-      >
-        {/* Logo */}
-        <div className="flex items-center gap-2">
-          <div className="p-2 bg-emerald-500/10 rounded-lg border border-emerald-500/20">
-            <Shield className="w-5 h-5 text-emerald-400" />
-          </div>
-          <span className="font-bold tracking-tight text-lg bg-gradient-to-r from-emerald-400 via-teal-400 to-sky-400 bg-clip-text text-transparent">
+      <nav className="fixed top-4 left-1/2 -translate-x-1/2 w-[92%] max-w-6xl h-16 bg-[#0c1222]/70 backdrop-blur-md border border-slate-800/60 rounded-2xl flex items-center justify-between px-6 z-50 shadow-2xl">
+        <div
+          className="flex items-center gap-2 cursor-pointer"
+          onClick={() => setActiveTab("home")}
+        >
+          <Shield className="w-5 h-5 text-emerald-400" />
+          <span className="font-bold tracking-tight text-lg text-white">
             RISK SENTINEL
-          </span>
-          <span
-            className="text-[10px] px-2 py-0.5 rounded-full font-mono"
-            style={{
-              backgroundColor: "var(--bg-card-inner)",
-              color: "var(--text-muted)",
-              border: "1px solid var(--border-subtle)",
-            }}
-          >
-            v2.1
           </span>
         </div>
 
-        {/* Nav links */}
-        <div
-          className="hidden md:flex items-center gap-8 text-sm font-medium"
-          style={{ color: "var(--text-secondary)" }}
-        >
-          <Link to="/" className="hover:text-emerald-400 transition-colors">
+        <div className="hidden md:flex items-center gap-7 text-xs font-bold tracking-wider uppercase">
+          <button
+            onClick={() => setActiveTab("home")}
+            className={
+              activeTab === "home"
+                ? "text-emerald-400"
+                : "text-slate-400 hover:text-slate-200"
+            }
+          >
             Home
-          </Link>
-          <Link
-            to="/about"
-            className="hover:text-emerald-400 transition-colors"
+          </button>
+          <button
+            onClick={() => setActiveTab("platform")}
+            className={
+              activeTab === "platform"
+                ? "text-emerald-400"
+                : "text-slate-400 hover:text-slate-200"
+            }
           >
-            About Us
-          </Link>
-          <a
-            href="#features"
-            className="hover:text-emerald-400 transition-colors"
+            Platform
+          </button>
+          <button
+            onClick={() => setActiveTab("how-it-works")}
+            className={
+              activeTab === "how-it-works"
+                ? "text-emerald-400"
+                : "text-slate-400 hover:text-slate-200"
+            }
           >
-            Core Engine
-          </a>
+            How It Works
+          </button>
+          <button
+            onClick={() => setActiveTab("about")}
+            className={
+              activeTab === "about"
+                ? "text-emerald-400"
+                : "text-slate-400 hover:text-slate-200"
+            }
+          >
+            About
+          </button>
         </div>
 
         {/* Right side: theme toggle + sign in */}
@@ -171,13 +176,10 @@ function Home() {
             </span>
           </h1>
 
-          <p
-            className="text-base sm:text-lg max-w-xl mx-auto md:mx-0 mb-8 leading-relaxed font-normal"
-            style={{ color: "var(--text-secondary)" }}
-          >
-            Audit third-party vendor safety architectures instantly. Inspect
-            cryptographic DNS structures, evaluate HTTP response headers, and
-            scan infrastructure nodes across real-time global asset maps.
+          <p className="text-base sm:text-lg text-slate-400 max-w-xl mx-auto md:mx-0 mb-8 leading-relaxed font-light">
+            Audit third-party vendor safety architectures instantly. Trusted by
+            security teams to continuously assess third-party vendors, reduce
+            supply-chain risk, and simplify compliance.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
@@ -317,41 +319,36 @@ function Home() {
         id="trusted"
         className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pb-20 relative z-10"
       >
-        <h4
-          className="text-sm font-semibold mb-6"
-          style={{ color: "var(--text-secondary)" }}
-        >
-          Trusted by
-        </h4>
-        <div
-          className="flex items-center gap-4 flex-wrap bg-transparent p-4 rounded-2xl"
-          style={{
-            border: "1px solid var(--border-subtle)",
-            backgroundColor: "var(--bg-card)",
-          }}
-        >
-          {["Acme", "NorthSec", "BlueShield", "EdgeCorp", "Sentra"].map(
-            (name) => (
-              <div
-                key={name}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl"
-                style={{
-                  backgroundColor: "var(--bg-card-inner)",
-                  border: "1px solid var(--border-color)",
-                }}
-              >
-                <div className="w-8 h-8 rounded-md bg-emerald-500/10 flex items-center justify-center text-emerald-400 font-bold">
-                  {name[0]}
-                </div>
+        <div className="rounded-3xl bg-[rgba(15,23,42,0.92)] border border-slate-800/60 shadow-[0_30px_80px_rgba(0,0,0,0.15)] p-10 text-center">
+          <h4
+            className="text-base font-semibold tracking-[0.18em] uppercase mb-3"
+            style={{ color: "var(--text-primary)" }}
+          >
+            Inspired by Enterprise Security Workflows
+          </h4>
+          <p
+            className="text-sm max-w-2xl mx-auto leading-relaxed mb-8"
+            style={{ color: "var(--text-secondary)" }}
+          >
+            Risk Sentinel follows security practices commonly adopted by leading
+            technology organizations, without implying these companies are
+            customers.
+          </p>
+
+          <div className="flex flex-wrap justify-center items-center gap-6">
+            {["Microsoft", "Google", "Cisco", "Cloudflare", "GitHub"].map(
+              (logo) => (
                 <div
-                  className="text-sm font-medium"
-                  style={{ color: "var(--text-primary)" }}
+                  key={logo}
+                  className="min-w-[110px] px-5 py-4 rounded-3xl border border-white/10 bg-white/5 text-slate-400 transition duration-300 ease-out hover:scale-[1.03] hover:text-emerald-400 hover:border-emerald-500/30 hover:bg-[rgba(16,185,129,0.06)]"
                 >
-                  {name}
+                  <span className="text-sm font-semibold tracking-[0.12em] uppercase">
+                    {logo}
+                  </span>
                 </div>
-              </div>
-            ),
-          )}
+              ),
+            )}
+          </div>
         </div>
       </section>
 
