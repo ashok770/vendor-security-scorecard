@@ -750,13 +750,44 @@ function Home() {
 
           {/* Simulation Output Display Screen Right */}
           <div
-            className="flex-1 bg-[#050811] border border-slate-900 rounded-xl p-5 flex flex-col justify-center min-h-[160px]"
+            className="flex-1 bg-[#050811] border border-slate-900 rounded-xl p-5 flex flex-col justify-between min-h-[220px]"
             id="sim-panel"
           >
-            <div className="text-center space-y-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-slate-700 mx-auto animate-ping" />
-              <div className="text-[11px] text-slate-500 font-mono italic">
-                Awaiting Sandbox Terminal Dispatch Request...
+            {/* Simulated Browser Frame Header */}
+            <div className="flex items-center justify-between border-b border-slate-900 pb-3 mb-2">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-red-500/40" />
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-500/40" />
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/40" />
+                <span className="text-[10px] font-mono text-slate-500 ml-2">preview_instance.json</span>
+              </div>
+              <span className="text-[9px] bg-slate-800 text-slate-400 font-mono px-2 py-0.5 rounded">PASSED 8/12</span>
+            </div>
+
+            {/* Score + Radial */}
+            <div className="flex items-center justify-between gap-4 py-2">
+              <div className="space-y-1">
+                <div className="text-2xl font-black text-white tracking-tight">88<span className="text-xs text-slate-500 font-normal"> / 100</span></div>
+                <div className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider font-mono">Grade A Resilience</div>
+              </div>
+              <div className="flex items-center justify-center w-14 h-14 rounded-full border-4 border-slate-800 border-t-emerald-500" style={{ animation: "spin 3s linear infinite" }}>
+                <span className="text-[10px] font-mono font-bold text-slate-400">92%</span>
+              </div>
+            </div>
+
+            {/* Security Checks */}
+            <div className="space-y-1.5 pt-2 border-t border-slate-900 font-mono text-[10px]">
+              <div className="flex justify-between text-emerald-400">
+                <span>✅ Content-Security-Policy</span>
+                <span>ACTIVE</span>
+              </div>
+              <div className="flex justify-between text-emerald-400">
+                <span>✅ SPF Verification Record</span>
+                <span>VALID</span>
+              </div>
+              <div className="flex justify-between text-slate-500">
+                <span>⚠️ Public Open Infrastructure Ports</span>
+                <span>1 EXPOSED</span>
               </div>
             </div>
           </div>
