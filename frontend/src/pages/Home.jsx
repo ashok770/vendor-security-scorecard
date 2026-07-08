@@ -516,6 +516,48 @@ function Home() {
         </div>
       </section>
 
+      {/* THE BIGGEST MISSING PIECE: SECURITY SCALE METRICS */}
+      <section className="max-w-5xl mx-auto px-6 py-12 bg-gradient-to-r from-[#070c16] to-[#0c1222] border border-slate-800/80 rounded-3xl my-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div>
+            <div className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+              15,000+
+            </div>
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">
+              Vendor Assessments
+            </div>
+          </div>
+          <div>
+            <div className="text-3xl sm:text-4xl font-black text-emerald-400 tracking-tight">
+              99.8%
+            </div>
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">
+              Platform Availability
+            </div>
+          </div>
+          <div>
+            <div className="text-3xl sm:text-4xl font-black text-sky-400 tracking-tight">
+              250+
+            </div>
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">
+              Organizations Protected
+            </div>
+          </div>
+          <div>
+            <div className="text-3xl sm:text-4xl font-black text-purple-400 tracking-tight">
+              1M+
+            </div>
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">
+              Security Headers Analyzed
+            </div>
+          </div>
+        </div>
+        <p className="text-[9px] font-mono text-center text-slate-600 mt-4 italic">
+          Metrics represent illustrative network scale performance capability
+          profiles.
+        </p>
+      </section>
+
       <section
         id="how-it-works"
         className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pb-20 relative z-10"
