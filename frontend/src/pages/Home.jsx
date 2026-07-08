@@ -10,6 +10,7 @@ import {
   ChevronRight,
   Sun,
   Moon,
+  CheckCircle,
 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import NetworkCanvas from "../components/NetworkCanvas";
@@ -380,6 +381,32 @@ function Home() {
                 Continuous vendor intelligence reduces surprise incidents and
                 speeds remediation across complex supply chains.
               </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-12 text-center">
+                <div className="bg-[#0c1222]/40 border border-slate-800/60 p-6 rounded-2xl">
+                  <div className="text-3xl font-black text-emerald-400">
+                    95%
+                  </div>
+                  <div className="text-xs text-slate-400 mt-1">
+                    of organizations rely heavily on third-party vendors.
+                  </div>
+                </div>
+                <div className="bg-[#0c1222]/40 border border-slate-800/60 p-6 rounded-2xl">
+                  <div className="text-3xl font-black text-sky-400">80+</div>
+                  <div className="text-xs text-slate-400 mt-1">
+                    average vendor endpoints used by modern enterprises.
+                  </div>
+                </div>
+                <div className="bg-[#0c1222]/40 border border-slate-800/60 p-6 rounded-2xl border-dashed border-red-500/20">
+                  <div className="text-3xl font-black text-red-400">
+                    1 Weak Link
+                  </div>
+                  <div className="text-xs text-slate-400 mt-1">
+                    can expose an entire organization's cloud pipeline.
+                  </div>
+                </div>
+              </div>
+
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {[
                   "Reduce breach window",
@@ -453,56 +480,37 @@ function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
             {
-              title: "Continuous Scanning",
-              desc: "Always-on, non-intrusive sweeps across network assets.",
+              title: "HTTP Security Header Analysis",
+              desc: "Evaluates perimeters for HSTS, CSP, and cross-framing defenses.",
             },
             {
-              title: "Risk Scoring",
-              desc: "Actionable scores with contextual evidence and impact.",
+              title: "DNS Security Validation",
+              desc: "Validates corporate cryptographic alignment using SPF and DMARC configurations.",
             },
             {
-              title: "Policy Engine",
-              desc: "Customizable policies with automated enforcement checks.",
+              title: "Vendor Risk Scoring",
+              desc: "Generates uniform corporate maturity rankings based on passive scanning rules.",
             },
             {
-              title: "Integrations",
-              desc: "SIEM, SOAR, ticketing, and cloud provider connectors.",
+              title: "PDF Executive Reports",
+              desc: "Exports beautiful high-fidelity audits for security stakeholders with one click.",
             },
             {
-              title: "Forensics",
-              desc: "Historical timelines and audit-ready reports.",
+              title: "Email Risk Alerts",
+              desc: "Triggers background Nodemailer despatches when high-severity threats break boundaries.",
             },
             {
-              title: "Automation",
-              desc: "Playbooks to triage and remediate common findings.",
+              title: "Historical Scan Ledger",
+              desc: "Tracks changes over time by caching assets securely inside MongoDB Atlas.",
             },
           ].map((f) => (
             <div
               key={f.title}
-              className="rounded-2xl p-6"
-              style={{
-                backgroundColor: "var(--bg-card)",
-                border: "1px solid var(--border-color)",
-              }}
+              className="bg-[#0c1222]/50 border border-slate-800/80 p-5 rounded-2xl"
             >
-              <div
-                className="w-12 h-12 rounded-xl mb-4 flex items-center justify-center"
-                style={{
-                  backgroundColor: "var(--bg-card-inner)",
-                  border: "1px solid var(--border-subtle)",
-                }}
-              >
-                <Activity className="w-5 h-5 text-emerald-400" />
-              </div>
-              <h4
-                className="font-bold mb-2"
-                style={{ color: "var(--text-primary)" }}
-              >
-                {f.title}
-              </h4>
-              <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-                {f.desc}
-              </p>
+              <CheckCircle className="w-5 h-5 text-emerald-400 mb-3" />
+              <h4 className="font-bold text-sm text-white mb-1">{f.title}</h4>
+              <p className="text-xs text-slate-400 font-light">{f.desc}</p>
             </div>
           ))}
         </div>
