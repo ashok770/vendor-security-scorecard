@@ -1,6 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Shield, ArrowLeft, Users, Eye, CheckCircle, Globe } from "lucide-react";
+import { Shield, ArrowLeft, Users, Eye, CheckCircle, Globe, ChevronRight } from "lucide-react";
+
+function FAQItem({ question, answer }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid var(--border-subtle)", backgroundColor: "var(--bg-card)" }}>
+      <button
+        onClick={() => setOpen((s) => !s)}
+        className="w-full flex items-center justify-between px-5 py-4"
+        style={{ color: "var(--text-primary)" }}
+      >
+        <span className="text-sm font-medium text-left">{question}</span>
+        <ChevronRight className={`w-4 h-4 shrink-0 transition-transform ${open ? "rotate-90" : ""}`} style={{ color: "var(--text-muted)" }} />
+      </button>
+      {open && (
+        <div className="px-5 pb-4 text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>
+          {answer}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function About() {
   return (
@@ -74,6 +95,23 @@ function About() {
           </div>
         </div>
 
+        {/* FAQ Section */}
+        <div className="mb-16">
+          <h3 className="text-2xl font-bold mb-6" style={{ color: "var(--text-primary)" }}>Frequently Asked Questions</h3>
+          <div className="space-y-3">
+            {[
+              { q: "What is vendor risk management?", a: "Vendor risk management is the process of identifying, assessing, and mitigating risks introduced by third-party suppliers and service providers who have access to your systems, data, or infrastructure." },
+              { q: "How does Risk Sentinel scan vendors?", a: "We perform passive, non-intrusive scans by querying public DNS records, analyzing HTTP response headers, and cross-referencing Shodan's infrastructure intelligence database — no active probing or intrusion." },
+              { q: "How often are vendors rescanned?", a: "Continuous monitoring performs full rescans on a configurable cadence. Critical configuration changes trigger immediate re-evaluation and alert dispatches." },
+              { q: "What do the security grades mean?", a: "Grades range from A (90–100, fully hardened) to F (below 60, critical exposure). Each grade reflects a weighted composite of HTTP headers, DNS anti-spoofing records, and infrastructure vulnerability data." },
+              { q: "Can I export reports?", a: "Yes — generate audit-ready PDF reports directly from the dashboard with a single click. Scheduled exports and CSV formats are on the roadmap." },
+              { q: "Is my scan data stored securely?", a: "All scan results are stored in an encrypted MongoDB Atlas cluster. Data is scoped per user account and never shared across organizations." },
+              { q: "Does it integrate with SIEMs?", a: "Out-of-the-box connectors for popular SIEM and ticketing platforms are on the roadmap. The REST API is available for custom integrations today." },
+              { q: "What compliance frameworks does it support?", a: "Risk Sentinel's scanning criteria aligns with SOC2, ISO/IEC 27001, and NIST CSF control families, providing evidence artifacts for audits." },
+            ].map((item) => <FAQItem key={item.q} question={item.q} answer={item.a} />)}
+          </div>
+        </div>
+
         {/* Compliance block */}
         <div
           className="rounded-2xl p-8 shadow-2xl relative"
@@ -101,6 +139,56 @@ function About() {
           </div>
         </div>
       </div>
+
+      {/* COMPREHENSIVE ENTERPRISE SAAS FOOTER */}
+      <footer className="max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pt-16 border-t mt-4 pb-8 text-xs font-medium" style={{ borderColor: "var(--border-subtle)", color: "var(--text-secondary)" }}>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+          <div className="space-y-2.5">
+            <div className="font-bold uppercase tracking-wider text-[10px] mb-3" style={{ color: "var(--text-primary)" }}>Product</div>
+            <Link to="/" className="block hover:text-emerald-400 transition-colors">Platform Overview</Link>
+            <div className="hover:text-emerald-400 transition-colors cursor-pointer">Interactive Sandbox</div>
+            <div className="hover:text-emerald-400 transition-colors cursor-pointer">Executive Reports</div>
+            <div className="hover:text-emerald-400 transition-colors cursor-pointer">Risk Scoring Engine</div>
+            <div className="hover:text-emerald-400 transition-colors cursor-pointer">Continuous Monitoring</div>
+          </div>
+          <div className="space-y-2.5">
+            <div className="font-bold uppercase tracking-wider text-[10px] mb-3" style={{ color: "var(--text-primary)" }}>Company</div>
+            <Link to="/about" className="block hover:text-emerald-400 transition-colors">About Us</Link>
+            <div className="hover:text-emerald-400 transition-colors cursor-pointer">Careers</div>
+            <div className="hover:text-emerald-400 transition-colors cursor-pointer">Contact Security</div>
+            <div className="hover:text-emerald-400 transition-colors cursor-pointer">Press & Media</div>
+            <div className="hover:text-emerald-400 transition-colors cursor-pointer">Verification Network</div>
+          </div>
+          <div className="space-y-2.5">
+            <div className="font-bold uppercase tracking-wider text-[10px] mb-3" style={{ color: "var(--text-primary)" }}>Resources</div>
+            <div className="hover:text-emerald-400 transition-colors cursor-pointer">Technical Documentation</div>
+            <div className="hover:text-emerald-400 transition-colors cursor-pointer">API Framework</div>
+            <div className="hover:text-emerald-400 transition-colors cursor-pointer">Platform Status</div>
+            <div className="hover:text-emerald-400 transition-colors cursor-pointer">Security Blog</div>
+            <div className="hover:text-emerald-400 transition-colors cursor-pointer">Compliance Guides</div>
+          </div>
+          <div className="space-y-2.5">
+            <div className="font-bold uppercase tracking-wider text-[10px] mb-3" style={{ color: "var(--text-primary)" }}>Legal & Social</div>
+            <div className="hover:text-emerald-400 transition-colors cursor-pointer">Privacy Perimeter</div>
+            <div className="hover:text-emerald-400 transition-colors cursor-pointer">Terms of Service</div>
+            <div className="hover:text-emerald-400 transition-colors cursor-pointer">Cookie Policy</div>
+            <a href="https://github.com/ashok770/vendor-security-scorecard" target="_blank" rel="noreferrer" className="block hover:text-emerald-400 transition-colors">GitHub Portal</a>
+            <div className="hover:text-emerald-400 transition-colors cursor-pointer">LinkedIn</div>
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-t pt-6" style={{ borderColor: "var(--border-subtle)", color: "var(--text-muted)" }}>
+          <div className="flex items-center gap-2">
+            <Shield className="w-4 h-4 text-emerald-400" />
+            <span className="font-bold text-[11px]" style={{ color: "var(--text-primary)" }}>RISK SENTINEL</span>
+            <span className="text-[10px]">— Enterprise Vendor Risk Intelligence</span>
+          </div>
+          <div className="text-[11px]">
+            © {new Date().getFullYear()} Risk Sentinel Inc. All infrastructure nodes secure.
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
