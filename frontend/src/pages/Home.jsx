@@ -92,23 +92,38 @@ function Home() {
         <div className="hidden md:flex items-center gap-7 text-xs font-bold tracking-wider uppercase">
           <button
             onClick={() => scrollTo("hero")}
-            className={activeTab === "hero" ? "text-emerald-400" : "text-slate-400 hover:text-slate-200"}
+            className={
+              activeTab === "hero"
+                ? "text-emerald-400"
+                : "text-slate-400 hover:text-slate-200"
+            }
           >
             Home
           </button>
           <button
             onClick={() => scrollTo("platform-features")}
-            className={activeTab === "platform-features" ? "text-emerald-400" : "text-slate-400 hover:text-slate-200"}
+            className={
+              activeTab === "platform-features"
+                ? "text-emerald-400"
+                : "text-slate-400 hover:text-slate-200"
+            }
           >
             Platform
           </button>
           <button
             onClick={() => scrollTo("how-it-works")}
-            className={activeTab === "how-it-works" ? "text-emerald-400" : "text-slate-400 hover:text-slate-200"}
+            className={
+              activeTab === "how-it-works"
+                ? "text-emerald-400"
+                : "text-slate-400 hover:text-slate-200"
+            }
           >
             How It Works
           </button>
-          <Link to="/about" className="text-slate-400 hover:text-slate-200 transition-colors">
+          <Link
+            to="/about"
+            className="text-slate-400 hover:text-slate-200 transition-colors"
+          >
             About
           </Link>
         </div>
@@ -146,7 +161,10 @@ function Home() {
       </nav>
 
       {/* ─── HERO ─── */}
-      <main id="hero" className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pt-32 pb-24 md:pt-44 flex flex-col md:flex-row items-center gap-16 relative min-h-[92vh]">
+      <main
+        id="hero"
+        className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pt-32 pb-24 md:pt-44 flex flex-col md:flex-row items-center gap-16 relative min-h-[92vh]"
+      >
         <NetworkCanvas />
         <div className="flex-1 text-center md:text-left relative z-[2]">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full text-xs font-medium mb-6 animate-pulse">
@@ -415,39 +433,99 @@ function Home() {
                 ))}
               </ul>
             </div>
-            <div className="w-full bg-[#080d1a]/80 border border-slate-800/80 rounded-xl p-5 space-y-4 shadow-inner max-h-[220px] overflow-y-auto custom-scrollbar">
-              <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
-                <span className="text-[11px] font-bold tracking-wider text-slate-400 uppercase">
-                  Live Perimeter Feed
-                </span>
+            {/* PRODUCT MANAGER APPROVED: HIGH-FIDELITY RISK DISTRIBUTION BARS */}
+            <div className="w-full bg-[#0c1222]/50 border border-slate-800/80 rounded-2xl p-6 flex flex-col justify-between min-h-[220px] h-full shadow-2xl">
+              {/* Component Header */}
+              <div className="flex items-center justify-between border-b border-slate-800/60 pb-3">
+                <div className="flex flex-col">
+                  <span className="text-[11px] font-bold tracking-wider text-slate-400 uppercase font-mono">
+                    Global Portfolio Risk
+                  </span>
+                  <span className="text-[10px] text-slate-500 mt-0.5">
+                    Asset distribution across 128 checked ecosystem nodes
+                  </span>
+                </div>
                 <span className="flex h-2 w-2 relative">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
               </div>
 
-              {/* Simulated Scrolling Corporate Assets Feed */}
-              <div className="space-y-2.5 font-mono text-[11px]">
-                <div className="flex justify-between items-center p-2.5 bg-[#050811] rounded-lg border border-slate-900">
-                  <span className="text-slate-300">microsoft.com</span>
-                  <span className="text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded">
-                    94/100 (A)
-                  </span>
+              {/* Fancy Simulated Bar Analytics Distribution */}
+              <div className="space-y-4 py-3">
+                {/* Bar 1: Secure Vendors */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between items-center text-[11px] font-mono">
+                    <span className="text-emerald-400 font-semibold flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />{" "}
+                      Grade A/B (Low Risk)
+                    </span>
+                    <span className="text-slate-400 font-bold">
+                      65%{" "}
+                      <span className="text-slate-600 text-[10px]">
+                        (83 Vendors)
+                      </span>
+                    </span>
+                  </div>
+                  <div className="w-full h-2 bg-slate-900 rounded-full overflow-hidden border border-slate-800/50">
+                    <div
+                      className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.3)]"
+                      style={{ width: "65%" }}
+                    />
+                  </div>
                 </div>
-                <div className="flex justify-between items-center p-2.5 bg-[#050811] rounded-lg border border-slate-900">
-                  <span className="text-slate-300">unsecured-api-node.net</span>
-                  <span className="text-red-400 font-bold bg-red-500/10 px-2 py-0.5 rounded">
-                    24/100 (F)
-                  </span>
+
+                {/* Bar 2: Warning Vendors */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between items-center text-[11px] font-mono">
+                    <span className="text-amber-400 font-semibold flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />{" "}
+                      Grade C/D (Medium Risk)
+                    </span>
+                    <span className="text-slate-400 font-bold">
+                      23%{" "}
+                      <span className="text-slate-600 text-[10px]">
+                        (29 Vendors)
+                      </span>
+                    </span>
+                  </div>
+                  <div className="w-full h-2 bg-slate-900 rounded-full overflow-hidden border border-slate-800/50">
+                    <div
+                      className="h-full bg-gradient-to-r from-amber-500 to-yellow-400 rounded-full shadow-[0_0_8px_rgba(245,158,11,0.3)]"
+                      style={{ width: "23%" }}
+                    />
+                  </div>
                 </div>
-                <div className="flex justify-between items-center p-2.5 bg-[#050811] rounded-lg border border-slate-900">
-                  <span className="text-slate-300">
-                    internal-vendor-ledger.org
-                  </span>
-                  <span className="text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded">
-                    58/100 (C)
-                  </span>
+
+                {/* Bar 3: Critical Gaps */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between items-center text-[11px] font-mono">
+                    <span className="text-red-400 font-semibold flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />{" "}
+                      Grade F (Critical Action Required)
+                    </span>
+                    <span className="text-slate-400 font-bold">
+                      12%{" "}
+                      <span className="text-slate-600 text-[10px]">
+                        (16 Vendors)
+                      </span>
+                    </span>
+                  </div>
+                  <div className="w-full h-2 bg-slate-900 rounded-full overflow-hidden border border-slate-800/50">
+                    <div
+                      className="h-full bg-gradient-to-r from-red-500 to-pink-500 rounded-full shadow-[0_0_8px_rgba(239,68,68,0.3)]"
+                      style={{ width: "12%" }}
+                    />
+                  </div>
                 </div>
+              </div>
+
+              {/* Component Bottom Insights */}
+              <div className="text-[10px] text-slate-500 border-t border-slate-900 pt-2 flex items-center justify-between font-mono">
+                <span>🛡️ Continuous Perimeter Scan Mode</span>
+                <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold bg-slate-800/60 px-2 py-0.5 rounded">
+                  NIST 800-161 Aligned
+                </span>
               </div>
             </div>
           </div>
