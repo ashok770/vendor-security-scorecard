@@ -17,16 +17,27 @@ import NetworkCanvas from "../components/NetworkCanvas";
 function FAQItem({ index, question, answer }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-card)' }}>
+    <div
+      className="rounded-2xl overflow-hidden"
+      style={{
+        border: "1px solid var(--border-subtle)",
+        backgroundColor: "var(--bg-card)",
+      }}
+    >
       <button
         onClick={() => setOpen((s) => !s)}
         className="w-full flex items-center justify-between px-4 py-3"
-        style={{ color: 'var(--text-primary)' }}
+        style={{ color: "var(--text-primary)" }}
       >
         <span className="text-sm font-medium">{question}</span>
-        <ChevronRight className={`w-4 h-4 transition-transform ${open ? 'rotate-90' : ''}`} />
+        <ChevronRight
+          className={`w-4 h-4 transition-transform ${open ? "rotate-90" : ""}`}
+        />
       </button>
-      <div className={`px-4 pb-4 transition-all ${open ? 'block' : 'hidden'}`} style={{ color: 'var(--text-secondary)' }}>
+      <div
+        className={`px-4 pb-4 transition-all ${open ? "block" : "hidden"}`}
+        style={{ color: "var(--text-secondary)" }}
+      >
         <div className="text-sm leading-relaxed">{answer}</div>
       </div>
     </div>
@@ -39,16 +50,23 @@ function Home() {
   return (
     <div
       className="min-h-screen relative overflow-hidden selection:bg-emerald-500/30"
-      style={{ backgroundColor: "var(--bg-base)", color: "var(--text-primary)" }}
+      style={{
+        backgroundColor: "var(--bg-base)",
+        color: "var(--text-primary)",
+      }}
     >
       {/* Background orbs */}
       <div
         className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full blur-[120px] pointer-events-none"
-        style={{ background: `radial-gradient(circle, var(--orb1), transparent)` }}
+        style={{
+          background: `radial-gradient(circle, var(--orb1), transparent)`,
+        }}
       />
       <div
         className="absolute top-[40%] right-[-10%] w-[500px] h-[500px] rounded-full blur-[100px] pointer-events-none"
-        style={{ background: `radial-gradient(circle, var(--orb2), transparent)` }}
+        style={{
+          background: `radial-gradient(circle, var(--orb2), transparent)`,
+        }}
       />
 
       {/* ─── NAVBAR ─── */}
@@ -81,10 +99,25 @@ function Home() {
         </div>
 
         {/* Nav links */}
-        <div className="hidden md:flex items-center gap-8 text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
-          <Link to="/" className="hover:text-emerald-400 transition-colors">Home</Link>
-          <Link to="/about" className="hover:text-emerald-400 transition-colors">About Us</Link>
-          <a href="#features" className="hover:text-emerald-400 transition-colors">Core Engine</a>
+        <div
+          className="hidden md:flex items-center gap-8 text-sm font-medium"
+          style={{ color: "var(--text-secondary)" }}
+        >
+          <Link to="/" className="hover:text-emerald-400 transition-colors">
+            Home
+          </Link>
+          <Link
+            to="/about"
+            className="hover:text-emerald-400 transition-colors"
+          >
+            About Us
+          </Link>
+          <a
+            href="#features"
+            className="hover:text-emerald-400 transition-colors"
+          >
+            Core Engine
+          </a>
         </div>
 
         {/* Right side: theme toggle + sign in */}
@@ -99,7 +132,11 @@ function Home() {
             }}
             title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
           >
-            {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-500" />}
+            {isDark ? (
+              <Sun className="w-4 h-4 text-amber-400" />
+            ) : (
+              <Moon className="w-4 h-4 text-indigo-500" />
+            )}
           </button>
           <Link
             to="/login"
@@ -120,17 +157,24 @@ function Home() {
         <NetworkCanvas />
         <div className="flex-1 text-center md:text-left relative z-[2]">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full text-xs font-medium mb-6 animate-pulse">
-            <Activity className="w-3.5 h-3.5" /> Supply-Chain Threat Monitoring Active
+            <Activity className="w-3.5 h-3.5" /> Supply-Chain Threat Monitoring
+            Active
           </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] mb-6" style={{ color: "var(--text-primary)" }}>
+          <h1
+            className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] mb-6"
+            style={{ color: "var(--text-primary)" }}
+          >
             Results-Driven <br />
             <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-sky-400 bg-clip-text text-transparent">
               Vendor Risk Intelligence
             </span>
           </h1>
 
-          <p className="text-base sm:text-lg max-w-xl mx-auto md:mx-0 mb-8 leading-relaxed font-normal" style={{ color: "var(--text-secondary)" }}>
+          <p
+            className="text-base sm:text-lg max-w-xl mx-auto md:mx-0 mb-8 leading-relaxed font-normal"
+            style={{ color: "var(--text-secondary)" }}
+          >
             Audit third-party vendor safety architectures instantly. Inspect
             cryptographic DNS structures, evaluate HTTP response headers, and
             scan infrastructure nodes across real-time global asset maps.
@@ -153,7 +197,11 @@ function Home() {
                 border: "1px solid var(--border-color)",
               }}
             >
-              View Architecture Suite <ChevronRight className="w-4 h-4" style={{ color: "var(--text-muted)" }} />
+              View Architecture Suite{" "}
+              <ChevronRight
+                className="w-4 h-4"
+                style={{ color: "var(--text-muted)" }}
+              />
             </Link>
           </div>
         </div>
@@ -163,18 +211,38 @@ function Home() {
           <div className="w-[280px] h-[280px] sm:w-[360px] sm:h-[360px] rounded-full relative bg-gradient-to-br from-emerald-500/20 via-teal-500/10 to-transparent flex items-center justify-center p-8 border border-emerald-500/20 shadow-[0_0_80px_rgba(16,185,129,0.15)] animate-[spin_60s_linear_infinite]">
             <div
               className="w-full h-full rounded-full flex flex-col items-center justify-center relative shadow-2xl text-center p-4"
-              style={{ backgroundColor: "var(--bg-card-inner)", border: "1px solid var(--border-subtle)" }}
+              style={{
+                backgroundColor: "var(--bg-card-inner)",
+                border: "1px solid var(--border-subtle)",
+              }}
             >
               <Shield className="w-16 h-16 text-emerald-400 drop-shadow-[0_0_15px_rgba(52,211,153,0.4)] mb-4" />
-              <div className="font-mono text-[11px] text-emerald-500 tracking-widest font-bold">NODE SECURE</div>
-              <div className="text-xs mt-1 font-light px-4" style={{ color: "var(--text-secondary)" }}>
+              <div className="font-mono text-[11px] text-emerald-500 tracking-widest font-bold">
+                NODE SECURE
+              </div>
+              <div
+                className="text-xs mt-1 font-light px-4"
+                style={{ color: "var(--text-secondary)" }}
+              >
                 Continuous Passive System Sweeping Engine Active
               </div>
             </div>
-            <div className="absolute top-4 right-4 p-2 rounded-xl shadow-xl" style={{ backgroundColor: "var(--bg-card-inner)", border: "1px solid var(--border-color)" }}>
+            <div
+              className="absolute top-4 right-4 p-2 rounded-xl shadow-xl"
+              style={{
+                backgroundColor: "var(--bg-card-inner)",
+                border: "1px solid var(--border-color)",
+              }}
+            >
               <Terminal className="w-4 h-4 text-sky-400" />
             </div>
-            <div className="absolute bottom-8 left-0 p-2 rounded-xl shadow-xl" style={{ backgroundColor: "var(--bg-card-inner)", border: "1px solid var(--border-color)" }}>
+            <div
+              className="absolute bottom-8 left-0 p-2 rounded-xl shadow-xl"
+              style={{
+                backgroundColor: "var(--bg-card-inner)",
+                border: "1px solid var(--border-color)",
+              }}
+            >
               <Database className="w-4 h-4 text-purple-400" />
             </div>
           </div>
@@ -182,8 +250,16 @@ function Home() {
       </main>
 
       {/* ─── FEATURES ─── */}
-      <section id="features" className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pb-32 relative z-10">
-        <div className="w-full h-[1px] mb-20" style={{ background: `linear-gradient(to right, transparent, var(--border-subtle), transparent)` }} />
+      <section
+        id="features"
+        className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pb-32 relative z-10"
+      >
+        <div
+          className="w-full h-[1px] mb-20"
+          style={{
+            background: `linear-gradient(to right, transparent, var(--border-subtle), transparent)`,
+          }}
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
@@ -214,183 +290,518 @@ function Home() {
                 border: "1px solid var(--border-color)",
               }}
             >
-              <div className={`w-10 h-10 rounded-xl bg-${color}-500/10 border border-${color}-500/20 flex items-center justify-center mb-5 text-${color}-400 group-hover:bg-${color}-500/20 transition-all`}>
+              <div
+                className={`w-10 h-10 rounded-xl bg-${color}-500/10 border border-${color}-500/20 flex items-center justify-center mb-5 text-${color}-400 group-hover:bg-${color}-500/20 transition-all`}
+              >
                 {icon}
               </div>
-              <h3 className="text-lg font-bold mb-2" style={{ color: "var(--text-primary)" }}>{title}</h3>
-              <p className="text-sm leading-relaxed font-light" style={{ color: "var(--text-secondary)" }}>{desc}</p>
+              <h3
+                className="text-lg font-bold mb-2"
+                style={{ color: "var(--text-primary)" }}
+              >
+                {title}
+              </h3>
+              <p
+                className="text-sm leading-relaxed font-light"
+                style={{ color: "var(--text-secondary)" }}
+              >
+                {desc}
+              </p>
             </div>
           ))}
         </div>
       </section>
 
       {/* ─── ADDITIONAL SAAS SECTIONS ─── */}
-      <section id="trusted" className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pb-20 relative z-10">
-        <h4 className="text-sm font-semibold mb-6" style={{ color: "var(--text-secondary)" }}>Trusted by</h4>
-        <div className="flex items-center gap-4 flex-wrap bg-transparent p-4 rounded-2xl" style={{ border: "1px solid var(--border-subtle)", backgroundColor: "var(--bg-card)" }}>
-          {['Acme', 'NorthSec', 'BlueShield', 'EdgeCorp', 'Sentra'].map((name) => (
-            <div key={name} className="flex items-center gap-3 px-4 py-3 rounded-xl" style={{ backgroundColor: "var(--bg-card-inner)", border: "1px solid var(--border-color)" }}>
-              <div className="w-8 h-8 rounded-md bg-emerald-500/10 flex items-center justify-center text-emerald-400 font-bold">{name[0]}</div>
-              <div className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>{name}</div>
-            </div>
-          ))}
+      <section
+        id="trusted"
+        className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pb-20 relative z-10"
+      >
+        <h4
+          className="text-sm font-semibold mb-6"
+          style={{ color: "var(--text-secondary)" }}
+        >
+          Trusted by
+        </h4>
+        <div
+          className="flex items-center gap-4 flex-wrap bg-transparent p-4 rounded-2xl"
+          style={{
+            border: "1px solid var(--border-subtle)",
+            backgroundColor: "var(--bg-card)",
+          }}
+        >
+          {["Acme", "NorthSec", "BlueShield", "EdgeCorp", "Sentra"].map(
+            (name) => (
+              <div
+                key={name}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl"
+                style={{
+                  backgroundColor: "var(--bg-card-inner)",
+                  border: "1px solid var(--border-color)",
+                }}
+              >
+                <div className="w-8 h-8 rounded-md bg-emerald-500/10 flex items-center justify-center text-emerald-400 font-bold">
+                  {name[0]}
+                </div>
+                <div
+                  className="text-sm font-medium"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  {name}
+                </div>
+              </div>
+            ),
+          )}
         </div>
       </section>
 
-      <section id="why-risk" className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pb-20 relative z-10">
-        <div className="rounded-2xl p-8" style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border-color)" }}>
+      <section
+        id="why-risk"
+        className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pb-20 relative z-10"
+      >
+        <div
+          className="rounded-2xl p-8"
+          style={{
+            backgroundColor: "var(--bg-card)",
+            border: "1px solid var(--border-color)",
+          }}
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div>
-              <h3 className="text-2xl font-bold mb-4" style={{ color: "var(--text-primary)" }}>Why Vendor Risk Matters</h3>
-              <p className="text-sm leading-relaxed mb-6" style={{ color: "var(--text-secondary)" }}>
-                Third-party providers enlarge attack surfaces, introduce weak configurations, and can silently expose critical infrastructure. Continuous vendor intelligence reduces surprise incidents and speeds remediation across complex supply chains.
+              <h3
+                className="text-2xl font-bold mb-4"
+                style={{ color: "var(--text-primary)" }}
+              >
+                Why Vendor Risk Matters
+              </h3>
+              <p
+                className="text-sm leading-relaxed mb-6"
+                style={{ color: "var(--text-secondary)" }}
+              >
+                Third-party providers enlarge attack surfaces, introduce weak
+                configurations, and can silently expose critical infrastructure.
+                Continuous vendor intelligence reduces surprise incidents and
+                speeds remediation across complex supply chains.
               </p>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {[
-                  'Reduce breach window',
-                  'Continuous configuration verification',
-                  'Automated compliance evidence',
-                  'Actionable remediation playbooks'
-                ].map((t)=> (
-                  <li key={t} className="px-4 py-2 rounded-lg" style={{ backgroundColor: "var(--bg-card-inner)", border: "1px solid var(--border-subtle)", color: "var(--text-primary)" }}>{t}</li>
+                  "Reduce breach window",
+                  "Continuous configuration verification",
+                  "Automated compliance evidence",
+                  "Actionable remediation playbooks",
+                ].map((t) => (
+                  <li
+                    key={t}
+                    className="px-4 py-2 rounded-lg"
+                    style={{
+                      backgroundColor: "var(--bg-card-inner)",
+                      border: "1px solid var(--border-subtle)",
+                      color: "var(--text-primary)",
+                    }}
+                  >
+                    {t}
+                  </li>
                 ))}
               </ul>
             </div>
-            <div className="p-6 rounded-2xl" style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.04), rgba(6,182,212,0.03))', border: '1px solid var(--border-subtle)' }}>
-              <div className="h-48 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'rgba(255,255,255,0.02)' }}>
-                <div className="text-sm text-emerald-300">Visual: risk distribution over vendor estate (preview)</div>
+            <div className="w-full bg-[#080d1a]/80 border border-slate-800/80 rounded-xl p-5 space-y-4 shadow-inner max-h-[220px] overflow-y-auto custom-scrollbar">
+              <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
+                <span className="text-[11px] font-bold tracking-wider text-slate-400 uppercase">
+                  Live Perimeter Feed
+                </span>
+                <span className="flex h-2 w-2 relative">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      <section id="platform-features" className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pb-20 relative z-10">
-        <h3 className="text-2xl font-bold mb-6" style={{ color: "var(--text-primary)" }}>Platform Features</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            {title: 'Continuous Scanning', desc: 'Always-on, non-intrusive sweeps across network assets.'},
-            {title: 'Risk Scoring', desc: 'Actionable scores with contextual evidence and impact.'},
-            {title: 'Policy Engine', desc: 'Customizable policies with automated enforcement checks.'},
-            {title: 'Integrations', desc: 'SIEM, SOAR, ticketing, and cloud provider connectors.'},
-            {title: 'Forensics', desc: 'Historical timelines and audit-ready reports.'},
-            {title: 'Automation', desc: 'Playbooks to triage and remediate common findings.'},
-          ].map((f)=> (
-            <div key={f.title} className="rounded-2xl p-6" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
-              <div className="w-12 h-12 rounded-xl mb-4 flex items-center justify-center" style={{ backgroundColor: 'var(--bg-card-inner)', border: '1px solid var(--border-subtle)' }}>
-                <Activity className="w-5 h-5 text-emerald-400" />
-              </div>
-              <h4 className="font-bold mb-2" style={{ color: 'var(--text-primary)' }}>{f.title}</h4>
-              <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{f.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section id="how-it-works" className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pb-20 relative z-10">
-        <h3 className="text-2xl font-bold mb-6" style={{ color: "var(--text-primary)" }}>How Risk Sentinel Works</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            {title: 'Discover', body: 'Map vendor assets and dependencies automatically.'},
-            {title: 'Assess', body: 'Analyze configurations, headers, and signatures.'},
-            {title: 'Act', body: 'Prioritize and trigger remediation workflows.'},
-          ].map((s, idx)=> (
-            <div key={s.title} className="p-6 rounded-2xl flex flex-col gap-4" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
-              <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.08), rgba(6,182,212,0.06))', border: '1px solid var(--border-subtle)' }}>
-                <div className="font-bold text-emerald-400">{idx+1}</div>
-              </div>
-              <h4 className="font-bold text-lg" style={{ color: 'var(--text-primary)' }}>{s.title}</h4>
-              <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{s.body}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section id="dashboard-preview" className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pb-20 relative z-10">
-        <h3 className="text-2xl font-bold mb-6" style={{ color: "var(--text-primary)" }}>Interactive Dashboard Preview</h3>
-        <div className="rounded-2xl overflow-hidden p-6" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 rounded-lg p-4" style={{ backgroundColor: 'var(--bg-card-inner)', border: '1px solid var(--border-subtle)' }}>
-              <div className="h-[320px] rounded-md relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-500/3" />
-                <div className="relative p-4 h-full">
-                  <div className="h-48 bg-[rgba(0,0,0,0.12)] rounded-md mb-4" />
-                  <div className="flex gap-3">
-                    <div className="h-12 w-full bg-[rgba(0,0,0,0.08)] rounded" />
-                    <div className="h-12 w-full bg-[rgba(0,0,0,0.06)] rounded" />
-                  </div>
+              {/* Simulated Scrolling Corporate Assets Feed */}
+              <div className="space-y-2.5 font-mono text-[11px]">
+                <div className="flex justify-between items-center p-2.5 bg-[#050811] rounded-lg border border-slate-900">
+                  <span className="text-slate-300">microsoft.com</span>
+                  <span className="text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded">
+                    94/100 (A)
+                  </span>
+                </div>
+                <div className="flex justify-between items-center p-2.5 bg-[#050811] rounded-lg border border-slate-900">
+                  <span className="text-slate-300">unsecured-api-node.net</span>
+                  <span className="text-red-400 font-bold bg-red-500/10 px-2 py-0.5 rounded">
+                    24/100 (F)
+                  </span>
+                </div>
+                <div className="flex justify-between items-center p-2.5 bg-[#050811] rounded-lg border border-slate-900">
+                  <span className="text-slate-300">
+                    internal-vendor-ledger.org
+                  </span>
+                  <span className="text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded">
+                    58/100 (C)
+                  </span>
                 </div>
               </div>
             </div>
-            <div className="rounded-lg p-4 flex flex-col gap-4" style={{ backgroundColor: 'var(--bg-card-inner)', border: '1px solid var(--border-subtle)' }}>
-              <div className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>Live Metrics</div>
-              <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>Risk Index: <span className="font-bold text-emerald-400">32</span></div>
-              <div className="flex gap-2 mt-2">
-                <div className="h-2 w-2 rounded-full bg-emerald-400" />
-                <div className="h-2 w-2 rounded-full bg-amber-400" />
-                <div className="h-2 w-2 rounded-full bg-red-400" />
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="platform-features"
+        className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pb-20 relative z-10"
+      >
+        <h3
+          className="text-2xl font-bold mb-6"
+          style={{ color: "var(--text-primary)" }}
+        >
+          Platform Features
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            {
+              title: "Continuous Scanning",
+              desc: "Always-on, non-intrusive sweeps across network assets.",
+            },
+            {
+              title: "Risk Scoring",
+              desc: "Actionable scores with contextual evidence and impact.",
+            },
+            {
+              title: "Policy Engine",
+              desc: "Customizable policies with automated enforcement checks.",
+            },
+            {
+              title: "Integrations",
+              desc: "SIEM, SOAR, ticketing, and cloud provider connectors.",
+            },
+            {
+              title: "Forensics",
+              desc: "Historical timelines and audit-ready reports.",
+            },
+            {
+              title: "Automation",
+              desc: "Playbooks to triage and remediate common findings.",
+            },
+          ].map((f) => (
+            <div
+              key={f.title}
+              className="rounded-2xl p-6"
+              style={{
+                backgroundColor: "var(--bg-card)",
+                border: "1px solid var(--border-color)",
+              }}
+            >
+              <div
+                className="w-12 h-12 rounded-xl mb-4 flex items-center justify-center"
+                style={{
+                  backgroundColor: "var(--bg-card-inner)",
+                  border: "1px solid var(--border-subtle)",
+                }}
+              >
+                <Activity className="w-5 h-5 text-emerald-400" />
+              </div>
+              <h4
+                className="font-bold mb-2"
+                style={{ color: "var(--text-primary)" }}
+              >
+                {f.title}
+              </h4>
+              <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+                {f.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section
+        id="how-it-works"
+        className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pb-20 relative z-10"
+      >
+        <h3
+          className="text-2xl font-bold mb-6"
+          style={{ color: "var(--text-primary)" }}
+        >
+          How Risk Sentinel Works
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            {
+              title: "Discover",
+              body: "Map vendor assets and dependencies automatically.",
+            },
+            {
+              title: "Assess",
+              body: "Analyze configurations, headers, and signatures.",
+            },
+            {
+              title: "Act",
+              body: "Prioritize and trigger remediation workflows.",
+            },
+          ].map((s, idx) => (
+            <div
+              key={s.title}
+              className="p-6 rounded-2xl flex flex-col gap-4"
+              style={{
+                backgroundColor: "var(--bg-card)",
+                border: "1px solid var(--border-color)",
+              }}
+            >
+              <div
+                className="w-14 h-14 rounded-full flex items-center justify-center"
+                style={{
+                  background:
+                    "linear-gradient(135deg, rgba(16,185,129,0.08), rgba(6,182,212,0.06))",
+                  border: "1px solid var(--border-subtle)",
+                }}
+              >
+                <div className="font-bold text-emerald-400">{idx + 1}</div>
+              </div>
+              <h4
+                className="font-bold text-lg"
+                style={{ color: "var(--text-primary)" }}
+              >
+                {s.title}
+              </h4>
+              <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+                {s.body}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section
+        id="dashboard-preview"
+        className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pb-20 relative z-10"
+      >
+        <h3
+          className="text-2xl font-bold mb-6"
+          style={{ color: "var(--text-primary)" }}
+        >
+          Interactive Dashboard Preview
+        </h3>
+        <div className="w-full bg-[#080d1a] border border-slate-800/80 rounded-2xl p-6 shadow-2xl flex flex-col md:flex-row gap-6">
+          {/* Simulation Controls Left */}
+          <div className="flex-1 space-y-4">
+            <div className="text-xs text-emerald-400 font-mono tracking-widest uppercase font-bold">
+              ▶️ Live Product Sandbox
+            </div>
+            <h4 className="text-lg font-bold text-white">
+              Test-Drive the Core Engine
+            </h4>
+            <p className="text-xs text-slate-400 leading-relaxed font-light">
+              Type an enterprise domain below to simulate our passive network
+              packet and DNS cryptanalysis sequencing layout.
+            </p>
+
+            <div className="space-y-3 pt-2">
+              <div className="relative">
+                <input
+                  type="text"
+                  defaultValue="target-vendor.com"
+                  id="sim-input"
+                  className="w-full h-10 bg-[#0d1527] border border-slate-800 rounded-xl px-4 text-xs font-mono text-slate-300 focus:outline-none focus:border-emerald-500/40"
+                />
+              </div>
+              <button
+                onClick={() => {
+                  const btn = document.getElementById("sim-btn");
+                  const panel = document.getElementById("sim-panel");
+                  btn.innerText = "Analyzing Node Frameworks...";
+                  btn.disabled = true;
+
+                  setTimeout(() => {
+                    panel.innerHTML = `
+                      <div class="animate-fadeIn space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-800/60 pb-3">
+                          <span class="font-mono text-xs text-emerald-400 font-bold">target-vendor.com</span>
+                          <span class="text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded font-bold uppercase">Grade F</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                          <div class="text-3xl font-black text-white">35<span class="text-xs text-slate-500 font-normal">/100</span></div>
+                          <div class="text-[10px] text-red-400 font-medium">⚠️ Critical Infrastructure Exploits Detected</div>
+                        </div>
+                        <div class="space-y-1.5 text-[11px] font-mono">
+                          <div class="text-red-400">❌ Strict-Transport-Security: MISSING</div>
+                          <div class="text-emerald-400">✅ DMARC Spoofing Record: CONFIGURED</div>
+                        </div>
+                      </div>
+                    `;
+                    btn.innerText = "Scan Complete";
+                  }, 1800);
+                }}
+                id="sim-btn"
+                className="w-full h-10 bg-[#10b981] text-slate-950 font-bold text-xs rounded-xl uppercase tracking-wider transition-all hover:brightness-110"
+              >
+                Run Sandbox Audit
+              </button>
+            </div>
+          </div>
+
+          {/* Simulation Output Display Screen Right */}
+          <div
+            className="flex-1 bg-[#050811] border border-slate-900 rounded-xl p-5 flex flex-col justify-center min-h-[160px]"
+            id="sim-panel"
+          >
+            <div className="text-center space-y-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-slate-700 mx-auto animate-ping" />
+              <div className="text-[11px] text-slate-500 font-mono italic">
+                Awaiting Sandbox Terminal Dispatch Request...
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="benefits" className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pb-20 relative z-10">
-        <h3 className="text-2xl font-bold mb-6" style={{ color: "var(--text-primary)" }}>Key Benefits</h3>
+      <section
+        id="benefits"
+        className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pb-20 relative z-10"
+      >
+        <h3
+          className="text-2xl font-bold mb-6"
+          style={{ color: "var(--text-primary)" }}
+        >
+          Key Benefits
+        </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
-            'Faster detection and response',
-            'Reduced operational overhead',
-            'Evidence for audits and compliance',
-            'Actionable, prioritized findings',
-            'Seamless integrations with tooling',
-            'Enterprise-grade data retention'
-          ].map((b)=> (
-            <div key={b} className="rounded-2xl p-6" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
-              <h4 className="font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>{b}</h4>
-              <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Short description highlighting why this matters for enterprise security teams.</p>
+            "Faster detection and response",
+            "Reduced operational overhead",
+            "Evidence for audits and compliance",
+            "Actionable, prioritized findings",
+            "Seamless integrations with tooling",
+            "Enterprise-grade data retention",
+          ].map((b) => (
+            <div
+              key={b}
+              className="rounded-2xl p-6"
+              style={{
+                backgroundColor: "var(--bg-card)",
+                border: "1px solid var(--border-color)",
+              }}
+            >
+              <h4
+                className="font-semibold mb-2"
+                style={{ color: "var(--text-primary)" }}
+              >
+                {b}
+              </h4>
+              <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+                Short description highlighting why this matters for enterprise
+                security teams.
+              </p>
             </div>
           ))}
         </div>
       </section>
 
-      <section id="faq" className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pb-20 relative z-10">
-        <h3 className="text-2xl font-bold mb-6" style={{ color: "var(--text-primary)" }}>FAQ</h3>
+      <section
+        id="faq"
+        className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pb-20 relative z-10"
+      >
+        <h3
+          className="text-2xl font-bold mb-6"
+          style={{ color: "var(--text-primary)" }}
+        >
+          FAQ
+        </h3>
         <div className="space-y-3">
           {[
-            {q: 'How often are vendors rescanned?', a: 'We continuously monitor and perform full rescans on a configurable cadence; critical changes trigger immediate re-evaluation.'},
-            {q: 'Can I export reports?', a: 'Yes — generate audit-ready reports in PDF/CSV formats and schedule automated exports to your storage.'},
-            {q: 'Does it integrate with SIEMs?', a: 'Out-of-the-box connectors are available for popular SIEM and ticketing platforms.'},
-          ].map((item, idx)=> (
-            <FAQItem key={item.q} index={idx} question={item.q} answer={item.a} />
+            {
+              q: "How often are vendors rescanned?",
+              a: "We continuously monitor and perform full rescans on a configurable cadence; critical changes trigger immediate re-evaluation.",
+            },
+            {
+              q: "Can I export reports?",
+              a: "Yes — generate audit-ready reports in PDF/CSV formats and schedule automated exports to your storage.",
+            },
+            {
+              q: "Does it integrate with SIEMs?",
+              a: "Out-of-the-box connectors are available for popular SIEM and ticketing platforms.",
+            },
+          ].map((item, idx) => (
+            <FAQItem
+              key={item.q}
+              index={idx}
+              question={item.q}
+              answer={item.a}
+            />
           ))}
         </div>
       </section>
 
-      <section id="cta" className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pb-20 relative z-10">
-        <div className="rounded-2xl p-10 flex flex-col md:flex-row items-center justify-between" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
+      <section
+        id="cta"
+        className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pb-20 relative z-10"
+      >
+        <div
+          className="rounded-2xl p-10 flex flex-col md:flex-row items-center justify-between"
+          style={{
+            backgroundColor: "var(--bg-card)",
+            border: "1px solid var(--border-color)",
+          }}
+        >
           <div>
-            <h3 className="text-2xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>Ready to reduce vendor risk?</h3>
-            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Start a free evaluation or book a demo to see Risk Sentinel in your environment.</p>
+            <h3
+              className="text-2xl font-bold mb-2"
+              style={{ color: "var(--text-primary)" }}
+            >
+              Ready to reduce vendor risk?
+            </h3>
+            <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+              Start a free evaluation or book a demo to see Risk Sentinel in
+              your environment.
+            </p>
           </div>
           <div className="flex gap-3 mt-6 md:mt-0">
-            <Link to="/login" className="px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold rounded-xl text-sm transition-all shadow-lg shadow-emerald-500/20">Get Started</Link>
-            <Link to="/about" className="px-6 py-3.5 rounded-xl text-sm" style={{ backgroundColor: 'var(--bg-card-inner)', border: '1px solid var(--border-color)', color: 'var(--text-primary)' }}>Book a Demo</Link>
+            <Link
+              to="/login"
+              className="px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold rounded-xl text-sm transition-all shadow-lg shadow-emerald-500/20"
+            >
+              Get Started
+            </Link>
+            <Link
+              to="/about"
+              className="px-6 py-3.5 rounded-xl text-sm"
+              style={{
+                backgroundColor: "var(--bg-card-inner)",
+                border: "1px solid var(--border-color)",
+                color: "var(--text-primary)",
+              }}
+            >
+              Book a Demo
+            </Link>
           </div>
         </div>
       </section>
 
       <footer className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pb-12 relative z-10">
-        <div className="rounded-2xl p-6 mt-6" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
+        <div
+          className="rounded-2xl p-6 mt-6"
+          style={{
+            backgroundColor: "var(--bg-card)",
+            border: "1px solid var(--border-color)",
+          }}
+        >
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <Shield className="w-6 h-6 text-emerald-400" />
               <div>
-                <div className="font-bold" style={{ color: 'var(--text-primary)' }}>RISK SENTINEL</div>
-                <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>Enterprise Vendor Risk Intelligence</div>
+                <div
+                  className="font-bold"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  RISK SENTINEL
+                </div>
+                <div
+                  className="text-xs"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  Enterprise Vendor Risk Intelligence
+                </div>
               </div>
             </div>
-            <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>© {new Date().getFullYear()} Risk Sentinel — All rights reserved</div>
+            <div className="text-sm" style={{ color: "var(--text-secondary)" }}>
+              © {new Date().getFullYear()} Risk Sentinel — All rights reserved
+            </div>
           </div>
         </div>
       </footer>
