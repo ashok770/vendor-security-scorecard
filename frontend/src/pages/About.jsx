@@ -143,7 +143,7 @@ function About() {
       </div>
 
       {/* COMPREHENSIVE ENTERPRISE SAAS FOOTER */}
-      <footer className="max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pt-16 border-t mt-4 pb-8 text-xs font-medium" style={{ borderColor: "var(--border-subtle)", color: "var(--text-secondary)" }}>
+      <footer className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pt-16 border-t mt-4 pb-8 text-xs font-medium" style={{ borderColor: "var(--border-subtle)", color: "var(--text-secondary)" }}>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
           <div className="space-y-2.5">
             <div className="font-bold uppercase tracking-wider text-[10px] mb-3" style={{ color: "var(--text-primary)" }}>Product</div>

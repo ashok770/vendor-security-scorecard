@@ -49,6 +49,12 @@ function Home() {
   const { isDark, toggle } = useTheme();
   const [activeTab, setActiveTab] = useState("home");
 
+  const scrollTo = (id) => {
+    setActiveTab(id);
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <div
       className="min-h-screen relative overflow-hidden selection:bg-emerald-500/30"
@@ -85,45 +91,26 @@ function Home() {
 
         <div className="hidden md:flex items-center gap-7 text-xs font-bold tracking-wider uppercase">
           <button
-            onClick={() => setActiveTab("home")}
-            className={
-              activeTab === "home"
-                ? "text-emerald-400"
-                : "text-slate-400 hover:text-slate-200"
-            }
+            onClick={() => scrollTo("hero")}
+            className={activeTab === "hero" ? "text-emerald-400" : "text-slate-400 hover:text-slate-200"}
           >
             Home
           </button>
           <button
-            onClick={() => setActiveTab("platform")}
-            className={
-              activeTab === "platform"
-                ? "text-emerald-400"
-                : "text-slate-400 hover:text-slate-200"
-            }
+            onClick={() => scrollTo("platform-features")}
+            className={activeTab === "platform-features" ? "text-emerald-400" : "text-slate-400 hover:text-slate-200"}
           >
             Platform
           </button>
           <button
-            onClick={() => setActiveTab("how-it-works")}
-            className={
-              activeTab === "how-it-works"
-                ? "text-emerald-400"
-                : "text-slate-400 hover:text-slate-200"
-            }
+            onClick={() => scrollTo("how-it-works")}
+            className={activeTab === "how-it-works" ? "text-emerald-400" : "text-slate-400 hover:text-slate-200"}
           >
             How It Works
           </button>
-          <button
-            onClick={() => setActiveTab("about")}
-            className={
-              activeTab === "about"
-                ? "text-emerald-400"
-                : "text-slate-400 hover:text-slate-200"
-            }
-          >
+          <Link to="/about" className="text-slate-400 hover:text-slate-200 transition-colors">
             About
-          </button>
+          </Link>
         </div>
 
         {/* Right side: theme toggle + sign in */}
@@ -159,7 +146,7 @@ function Home() {
       </nav>
 
       {/* ─── HERO ─── */}
-      <main className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pt-32 pb-24 md:pt-44 flex flex-col md:flex-row items-center gap-16 relative min-h-[92vh]">
+      <main id="hero" className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pt-32 pb-24 md:pt-44 flex flex-col md:flex-row items-center gap-16 relative min-h-[92vh]">
         <NetworkCanvas />
         <div className="flex-1 text-center md:text-left relative z-[2]">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full text-xs font-medium mb-6 animate-pulse">
