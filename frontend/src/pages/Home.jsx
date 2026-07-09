@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   Shield,
@@ -11,11 +11,26 @@ import {
   Sun,
   Moon,
   CheckCircle,
+  Loader2,
 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import NetworkCanvas from "../components/NetworkCanvas";
 
-function FAQItem({ index, question, answer }) {
+const scanSteps = [
+  "Initializing Risk Sentinel Engine...",
+  "Resolving Vendor Domain...",
+  "Inspecting HTTP Security Headers...",
+  "Analyzing DNS Configuration...",
+  "Checking TLS Configuration...",
+  "Inspecting Public Infrastructure...",
+  "Calculating Risk Score...",
+  "Generating Executive Report...",
+];
+
+const completedHeaders = ["HSTS", "CSP", "X-Frame-Options"];
+const completedDns = ["SPF", "DMARC"];
+
+function FAQItem({ question, answer }) {
   const [open, setOpen] = useState(false);
   return (
     <div
@@ -48,6 +63,63 @@ function FAQItem({ index, question, answer }) {
 function Home() {
   const { isDark, toggle } = useTheme();
   const [activeTab, setActiveTab] = useState("home");
+  const [domain, setDomain] = useState("example-vendor.com");
+  const [scanStatus, setScanStatus] = useState("idle");
+  const [activeStep, setActiveStep] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [animatedScore, setAnimatedScore] = useState(0);
+  const [loadingDots, setLoadingDots] = useState("");
+
+  useEffect(() => {
+    if (scanStatus !== "scanning") return undefined;
+
+    const timeoutIds = [];
+    scanSteps.forEach((_, index) => {
+      timeoutIds.push(
+        setTimeout(
+          () => {
+            setActiveStep(index);
+            setProgress(Math.round(((index + 1) / scanSteps.length) * 100));
+          },
+          450 * index + 300,
+        ),
+      );
+    });
+
+    timeoutIds.push(
+      setTimeout(
+        () => {
+          setLoadingDots("");
+          setScanStatus("complete");
+        },
+        450 * scanSteps.length + 450,
+      ),
+    );
+
+    return () => timeoutIds.forEach((id) => clearTimeout(id));
+  }, [scanStatus]);
+
+  useEffect(() => {
+    if (scanStatus !== "scanning") return undefined;
+    const dotTimer = setInterval(() => {
+      setLoadingDots((prev) => (prev.length >= 3 ? "" : `${prev}.`));
+    }, 400);
+    return () => clearInterval(dotTimer);
+  }, [scanStatus]);
+
+  useEffect(() => {
+    if (scanStatus === "complete") {
+      let current = 0;
+      const target = 91;
+      const countTimer = setInterval(() => {
+        current += 2;
+        setAnimatedScore(current >= target ? target : current);
+        if (current >= target) clearInterval(countTimer);
+      }, 18);
+      return () => clearInterval(countTimer);
+    }
+    return undefined;
+  }, [scanStatus]);
 
   const scrollTo = (id) => {
     setActiveTab(id);
@@ -688,108 +760,306 @@ function Home() {
           className="text-2xl font-bold mb-6"
           style={{ color: "var(--text-primary)" }}
         >
-          Interactive Dashboard Preview
+          Live Risk Assessment Preview
         </h3>
-        <div className="w-full bg-[#080d1a] border border-slate-800/80 rounded-2xl p-6 shadow-2xl flex flex-col md:flex-row gap-6">
-          {/* Simulation Controls Left */}
-          <div className="flex-1 space-y-4">
-            <div className="text-xs text-emerald-400 font-mono tracking-widest uppercase font-bold">
-              ▶️ Live Product Sandbox
-            </div>
-            <h4 className="text-lg font-bold text-white">
-              Test-Drive the Core Engine
-            </h4>
-            <p className="text-xs text-slate-400 leading-relaxed font-light">
-              Type an enterprise domain below to simulate our passive network
-              packet and DNS cryptanalysis sequencing layout.
-            </p>
-
-            <div className="space-y-3 pt-2">
-              <div className="relative">
-                <input
-                  type="text"
-                  defaultValue="target-vendor.com"
-                  id="sim-input"
-                  className="w-full h-10 bg-[#0d1527] border border-slate-800 rounded-xl px-4 text-xs font-mono text-slate-300 focus:outline-none focus:border-emerald-500/40"
-                />
+        <div className="w-full rounded-3xl border border-[var(--border-color)] bg-[var(--bg-card)] shadow-2xl p-6 flex flex-col xl:flex-row gap-6">
+          <div className="xl:w-[40%] rounded-3xl border border-[var(--border-color)] bg-[var(--bg-card-inner)] p-6 flex flex-col justify-between gap-5">
+            <div>
+              <div className="text-xs uppercase tracking-[0.3em] text-emerald-400 font-semibold font-mono mb-3">
+                Live Product Sandbox
               </div>
-              <button
-                onClick={() => {
-                  const btn = document.getElementById("sim-btn");
-                  const panel = document.getElementById("sim-panel");
-                  btn.innerText = "Analyzing Node Frameworks...";
-                  btn.disabled = true;
-
-                  setTimeout(() => {
-                    panel.innerHTML = `
-                      <div class="animate-fadeIn space-y-4">
-                        <div class="flex justify-between items-center border-b border-slate-800/60 pb-3">
-                          <span class="font-mono text-xs text-emerald-400 font-bold">target-vendor.com</span>
-                          <span class="text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded font-bold uppercase">Grade F</span>
-                        </div>
-                        <div class="flex items-center gap-4">
-                          <div class="text-3xl font-black text-white">35<span class="text-xs text-slate-500 font-normal">/100</span></div>
-                          <div class="text-[10px] text-red-400 font-medium">⚠️ Critical Infrastructure Exploits Detected</div>
-                        </div>
-                        <div class="space-y-1.5 text-[11px] font-mono">
-                          <div class="text-red-400">❌ Strict-Transport-Security: MISSING</div>
-                          <div class="text-emerald-400">✅ DMARC Spoofing Record: CONFIGURED</div>
-                        </div>
-                      </div>
-                    `;
-                    btn.innerText = "Scan Complete";
-                  }, 1800);
-                }}
-                id="sim-btn"
-                className="w-full h-10 bg-[#10b981] text-slate-950 font-bold text-xs rounded-xl uppercase tracking-wider transition-all hover:brightness-110"
+              <h4
+                className="text-3xl font-bold"
+                style={{ color: "var(--text-primary)" }}
               >
-                Run Sandbox Audit
+                Live Risk Assessment Preview
+              </h4>
+              <p className="mt-4 text-sm leading-7 text-[var(--text-secondary)]">
+                Experience how Risk Sentinel evaluates vendor security posture
+                in real time before you even sign in.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <label className="block text-xs uppercase tracking-[0.2em] text-slate-500 font-medium font-mono">
+                Domain
+              </label>
+              <input
+                type="text"
+                value={domain}
+                onChange={(e) => setDomain(e.target.value)}
+                placeholder="example-vendor.com"
+                className="w-full rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  if (scanStatus === "scanning") return;
+                  setActiveStep(0);
+                  setProgress(0);
+                  setAnimatedScore(0);
+                  setLoadingDots("");
+                  setScanStatus("scanning");
+                }}
+                disabled={scanStatus === "scanning"}
+                className="w-full rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-semibold py-3 uppercase tracking-[0.15em] shadow-lg shadow-emerald-500/20 transition-transform duration-300 hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {scanStatus === "scanning"
+                  ? "Launching Sandbox Audit..."
+                  : scanStatus === "complete"
+                    ? "Run Another Audit"
+                    : "Run Sandbox Audit"}
               </button>
+              <p className="text-xs leading-5 text-slate-400">
+                This demonstration uses a simulated security assessment based on
+                our real analysis workflow.
+              </p>
             </div>
           </div>
 
-          {/* Simulation Output Display Screen Right */}
-          <div
-            className="flex-1 bg-[#050811] border border-slate-900 rounded-xl p-5 flex flex-col justify-between min-h-[220px]"
-            id="sim-panel"
-          >
-            {/* Simulated Browser Frame Header */}
-            <div className="flex items-center justify-between border-b border-slate-900 pb-3 mb-2">
-              <div className="flex items-center gap-1.5">
+          <div className="xl:w-[60%] rounded-3xl border border-[var(--border-color)] bg-[var(--bg-card-inner)] p-6 flex flex-col gap-5 shadow-inner min-h-[460px]">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <div className="text-xs uppercase tracking-[0.22em] text-slate-500 font-mono font-semibold mb-2">
+                  Simulated Secure Overview
+                </div>
+                <div className="text-sm font-medium text-[var(--text-primary)]">
+                  Vendor sandbox audit for{" "}
+                  <span className="text-emerald-400">
+                    {domain || "example-vendor.com"}
+                  </span>
+                </div>
+              </div>
+              <div className="inline-flex items-center gap-2 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] px-3 py-2 text-xs text-slate-400 font-mono">
                 <span className="w-2.5 h-2.5 rounded-full bg-red-500/40" />
                 <span className="w-2.5 h-2.5 rounded-full bg-amber-500/40" />
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/40" />
-                <span className="text-[10px] font-mono text-slate-500 ml-2">preview_instance.json</span>
-              </div>
-              <span className="text-[9px] bg-slate-800 text-slate-400 font-mono px-2 py-0.5 rounded">PASSED 8/12</span>
-            </div>
-
-            {/* Score + Radial */}
-            <div className="flex items-center justify-between gap-4 py-2">
-              <div className="space-y-1">
-                <div className="text-2xl font-black text-white tracking-tight">88<span className="text-xs text-slate-500 font-normal"> / 100</span></div>
-                <div className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider font-mono">Grade A Resilience</div>
-              </div>
-              <div className="flex items-center justify-center w-14 h-14 rounded-full border-4 border-slate-800 border-t-emerald-500" style={{ animation: "spin 3s linear infinite" }}>
-                <span className="text-[10px] font-mono font-bold text-slate-400">92%</span>
+                <span>preview_instance.json</span>
               </div>
             </div>
 
-            {/* Security Checks */}
-            <div className="space-y-1.5 pt-2 border-t border-slate-900 font-mono text-[10px]">
-              <div className="flex justify-between text-emerald-400">
-                <span>✅ Content-Security-Policy</span>
-                <span>ACTIVE</span>
+            {scanStatus === "scanning" ? (
+              <div className="flex-1 flex flex-col justify-between gap-5">
+                <div className="space-y-4">
+                  <div className="rounded-3xl border border-[var(--border-color)] bg-[var(--bg-card)] p-4 shadow-sm">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="text-sm font-semibold text-[var(--text-primary)]">
+                        {scanSteps[activeStep]}
+                      </div>
+                      <div className="text-xs text-slate-500 font-mono">
+                        {loadingDots}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    {scanSteps.map((step, index) => {
+                      const isActive = index === activeStep;
+                      const isComplete = index < activeStep;
+                      return (
+                        <div
+                          key={step}
+                          className={`rounded-2xl border px-4 py-3 transition-all duration-300 ${
+                            isActive
+                              ? "border-emerald-500/40 bg-emerald-500/5 shadow-[0_0_30px_rgba(16,185,129,0.09)]"
+                              : "border-[var(--border-color)] bg-[var(--bg-card)]"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between gap-3 text-sm">
+                            <div className="inline-flex items-center gap-2">
+                              <span
+                                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
+                                  isComplete
+                                    ? "bg-emerald-500/10 text-emerald-400"
+                                    : isActive
+                                      ? "bg-emerald-400/15 text-emerald-300"
+                                      : "bg-slate-800 text-slate-500"
+                                }`}
+                              >
+                                {isComplete ? (
+                                  <CheckCircle className="w-4 h-4" />
+                                ) : isActive ? (
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                ) : (
+                                  <Shield className="w-4 h-4" />
+                                )}
+                              </span>
+                              <span
+                                className={
+                                  isActive
+                                    ? "font-semibold text-emerald-200"
+                                    : "text-slate-400"
+                                }
+                              >
+                                {step}
+                              </span>
+                            </div>
+                            <span className="text-[11px] uppercase tracking-[0.18em] text-slate-500 font-semibold">
+                              {isComplete
+                                ? "Done"
+                                : isActive
+                                  ? "In progress"
+                                  : "Pending"}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between text-xs uppercase tracking-[0.22em] text-slate-500 font-mono">
+                    <span>Audit progress</span>
+                    <span>{progress}%</span>
+                  </div>
+                  <div className="h-2 rounded-full bg-slate-800 overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-500 transition-all duration-500"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                </div>
               </div>
-              <div className="flex justify-between text-emerald-400">
-                <span>✅ SPF Verification Record</span>
-                <span>VALID</span>
+            ) : scanStatus === "complete" ? (
+              <div className="space-y-6">
+                <div className="rounded-[28px] border border-[var(--border-color)] bg-[var(--bg-card)] p-5 shadow-sm">
+                  <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
+                    <div>
+                      <div className="text-xs uppercase tracking-[0.22em] text-slate-500 font-mono mb-2">
+                        Vendor Performance Overview
+                      </div>
+                      <div className="text-3xl font-bold text-white tracking-tight">
+                        {domain || "example-vendor.com"}
+                      </div>
+                    </div>
+                    <div className="inline-flex items-center gap-3 rounded-2xl bg-slate-900/80 px-4 py-3 border border-slate-800">
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-slate-400">
+                        Risk Grade
+                      </span>
+                      <span className="rounded-full bg-emerald-500/15 text-emerald-300 px-3 py-2 text-sm font-semibold">
+                        A
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 xl:grid-cols-[170px_minmax(0,1fr)] gap-5">
+                  <div className="rounded-[28px] border border-[var(--border-color)] bg-[var(--bg-card)] p-5 flex items-center justify-center shadow-sm">
+                    <div className="relative w-32 h-32">
+                      <div
+                        className="absolute inset-0 rounded-full bg-slate-900"
+                        style={{
+                          boxShadow: "inset 0 0 0 5px rgba(56,189,248,0.08)",
+                        }}
+                      />
+                      <div
+                        className="absolute inset-0 rounded-full"
+                        style={{
+                          backgroundImage: `conic-gradient(rgba(16,185,129,0.9) ${animatedScore * 3.6}deg, rgba(148,163,184,0.14) ${animatedScore * 3.6}deg)`,
+                        }}
+                      />
+                      <div className="absolute inset-4 rounded-full bg-[var(--bg-card-inner)] flex flex-col items-center justify-center text-center">
+                        <span className="text-3xl font-bold text-white">
+                          {animatedScore}
+                        </span>
+                        <span className="text-[11px] uppercase tracking-[0.25em] text-slate-500 font-semibold">
+                          Score
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-4">
+                    <div className="rounded-[28px] border border-[var(--border-color)] bg-[var(--bg-card)] p-5 shadow-sm">
+                      <div className="text-xs uppercase tracking-[0.22em] text-slate-500 font-mono mb-4">
+                        HTTP Security Headers
+                      </div>
+                      {completedHeaders.map((item) => (
+                        <div
+                          key={item}
+                          className="flex items-center justify-between gap-3 mb-3 last:mb-0"
+                        >
+                          <span className="inline-flex items-center gap-2 text-sm text-white">
+                            <CheckCircle className="w-4 h-4 text-emerald-400" />
+                            {item}
+                          </span>
+                          <span className="text-[11px] uppercase text-emerald-300 tracking-[0.2em] font-semibold">
+                            Active
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="rounded-[28px] border border-[var(--border-color)] bg-[var(--bg-card)] p-5 shadow-sm">
+                      <div className="text-xs uppercase tracking-[0.22em] text-slate-500 font-mono mb-4">
+                        DNS Protection
+                      </div>
+                      <div className="space-y-3">
+                        {completedDns.map((item) => (
+                          <div
+                            key={item}
+                            className="flex items-center justify-between gap-3 text-sm text-white"
+                          >
+                            <span className="inline-flex items-center gap-2">
+                              <CheckCircle className="w-4 h-4 text-emerald-400" />
+                              {item}
+                            </span>
+                            <span className="text-[11px] uppercase text-emerald-300 tracking-[0.2em] font-semibold">
+                              Valid
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="rounded-[28px] border border-[var(--border-color)] bg-[var(--bg-card)] p-5 shadow-sm">
+                      <div className="text-xs uppercase tracking-[0.22em] text-slate-500 font-mono mb-4">
+                        Open Ports
+                      </div>
+                      <div className="inline-flex items-center gap-2 rounded-2xl bg-slate-900/80 px-4 py-3 text-sm text-white font-semibold">
+                        <span className="text-emerald-400">443</span>
+                        <span className="text-slate-500 text-xs uppercase tracking-[0.2em]">
+                          secure
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="rounded-[28px] border border-emerald-500/20 bg-emerald-500/5 p-5 text-sm text-emerald-100 shadow-sm">
+                  <div className="font-semibold text-white mb-2">
+                    Executive Alert
+                  </div>
+                  <div className="text-slate-300">
+                    No critical exposure detected.
+                  </div>
+                </div>
+
+                <div className="flex justify-end">
+                  <Link
+                    to="/login"
+                    className="inline-flex items-center gap-2 rounded-2xl bg-[#0f172a] px-4 py-3 text-sm font-semibold text-emerald-300 border border-emerald-500/20 transition hover:bg-[#111c31]"
+                  >
+                    View Full Dashboard
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
               </div>
-              <div className="flex justify-between text-slate-500">
-                <span>⚠️ Public Open Infrastructure Ports</span>
-                <span>1 EXPOSED</span>
+            ) : (
+              <div className="flex-1 rounded-[28px] border border-[var(--border-color)] bg-[var(--bg-card)] p-6 flex flex-col justify-center items-center text-center gap-4">
+                <div className="inline-flex items-center gap-2 rounded-full bg-slate-900/80 px-4 py-2 text-xs uppercase tracking-[0.25em] text-slate-400 font-semibold">
+                  <Loader2 className="w-4 h-4 animate-spin text-emerald-400" />{" "}
+                  Sandbox preview ready
+                </div>
+                <div className="text-lg font-semibold text-white max-w-sm">
+                  Run a sandbox audit to reveal the Risk Sentinel enterprise
+                  dashboard experience.
+                </div>
+                <div className="text-sm text-slate-500 max-w-[340px]">
+                  The preview mimics our full product environment with live
+                  score, grade badge, security controls, and executive alerting.
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </section>
