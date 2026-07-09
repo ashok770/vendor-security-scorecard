@@ -17,14 +17,13 @@ import { useTheme } from "../context/ThemeContext";
 import NetworkCanvas from "../components/NetworkCanvas";
 
 const scanSteps = [
-  "Initializing Risk Sentinel Engine...",
-  "Resolving Vendor Domain...",
-  "Inspecting HTTP Security Headers...",
-  "Analyzing DNS Configuration...",
-  "Checking TLS Configuration...",
-  "Inspecting Public Infrastructure...",
-  "Calculating Risk Score...",
-  "Generating Executive Report...",
+    "Initializing Risk Sentinel Engine...",
+    "Resolving domain",
+    "Checking HTTP Security Headers",
+    "Checking DNS",
+    "Inspecting Infrastructure",
+    "Calculating Risk Score",
+    "Generating Executive Report",
 ];
 
 const completedHeaders = ["HSTS", "CSP", "X-Frame-Options"];
@@ -120,6 +119,31 @@ function Home() {
     }
     return undefined;
   }, [scanStatus]);
+
+  const useCountUp = (target, trigger, duration = 1500) => {
+    const [count, setCount] = useState(0);
+    useEffect(() => {
+      if (!trigger) return;
+      let start = 0;
+      const step = Math.ceil(target / (duration / 16));
+      const timer = setInterval(() => {
+        start += step;
+        if (start >= target) { setCount(target); clearInterval(timer); }
+        else setCount(start);
+      }, 16);
+      return () => clearInterval(timer);
+    }, [trigger, target, duration]);
+    return count;
+  };
+
+  const [metricsVisible, setMetricsVisible] = useState(false);
+  const metricsRef = (el) => {
+    if (!el || metricsVisible) return;
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setMetricsVisible(true); obs.disconnect(); } }, { threshold: 0.3 });
+    obs.observe(el);
+  };
+  const count500 = useCountUp(500, metricsVisible);
+  const count95 = useCountUp(95, metricsVisible);
 
   const scrollTo = (id) => {
     setActiveTab(id);
@@ -248,16 +272,16 @@ function Home() {
             className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] mb-6"
             style={{ color: "var(--text-primary)" }}
           >
-            Results-Driven <br />
+            Reduce Third-Party Risk <br />
             <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-sky-400 bg-clip-text text-transparent">
-              Vendor Risk Intelligence
+              Before It Becomes a Breach
             </span>
           </h1>
 
           <p className="text-base sm:text-lg text-slate-400 max-w-xl mx-auto md:mx-0 mb-8 leading-relaxed font-light">
-            Audit third-party vendor safety architectures instantly. Trusted by
-            security teams to continuously assess third-party vendors, reduce
-            supply-chain risk, and simplify compliance.
+            Continuously monitor vendors, detect security weaknesses, reduce
+            compliance effort, and deliver executive-ready reports that align
+            security decisions with business risk.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
@@ -265,7 +289,7 @@ function Home() {
               to="/login"
               className="group px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold rounded-xl text-sm transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 hover:brightness-110"
             >
-              Launch Intelligence Portal
+              Run Free Vendor Assessment
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
@@ -277,7 +301,7 @@ function Home() {
                 border: "1px solid var(--border-color)",
               }}
             >
-              View Architecture Suite{" "}
+              Analyze a Vendor
               <ChevronRight
                 className="w-4 h-4"
                 style={{ color: "var(--text-muted)" }}
@@ -402,30 +426,55 @@ function Home() {
             className="text-base font-semibold tracking-[0.18em] uppercase mb-3"
             style={{ color: "var(--text-primary)" }}
           >
-            Inspired by Enterprise Security Workflows
+            Inspired by enterprise security workflows used across modern organizations
           </h4>
           <p
             className="text-sm max-w-2xl mx-auto leading-relaxed mb-8"
             style={{ color: "var(--text-secondary)" }}
           >
-            Risk Sentinel follows security practices commonly adopted by leading
-            technology organizations, without implying these companies are
-            customers.
+            Risk Sentinel is built to match the operational priorities of
+            security, compliance and procurement teams while preserving the
+            review processes that matter most to enterprise leaders.
           </p>
 
-          <div className="flex flex-wrap justify-center items-center gap-6">
-            {["Microsoft", "Google", "Cisco", "Cloudflare", "GitHub"].map(
-              (logo) => (
-                <div
-                  key={logo}
-                  className="min-w-[110px] px-5 py-4 rounded-3xl border border-white/10 bg-white/5 text-slate-400 transition duration-300 ease-out hover:scale-[1.03] hover:text-emerald-400 hover:border-emerald-500/30 hover:bg-[rgba(16,185,129,0.06)]"
-                >
-                  <span className="text-sm font-semibold tracking-[0.12em] uppercase">
-                    {logo}
-                  </span>
+          <div className="flex flex-wrap justify-center items-center gap-4 mb-8">
+            {[
+              "SecureOps",
+              "RiskGrid",
+              "VaultPoint",
+              "CloudAnchor",
+              "SentinelSync",
+            ].map((logo) => (
+              <div
+                key={logo}
+                className="min-w-[110px] px-5 py-4 rounded-3xl border border-white/10 bg-white/5 text-slate-400 transition duration-300 ease-out hover:scale-[1.03] hover:text-emerald-400 hover:border-emerald-500/30 hover:bg-[rgba(16,185,129,0.06)]"
+              >
+                <span className="text-sm font-semibold tracking-[0.12em] uppercase">
+                  {logo}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4" ref={metricsRef}>
+            {[
+              { value: `${count500}+`, label: "Vendor Assessments Simulated" },
+              { value: `${count95}%`, label: "Configuration Detection Accuracy" },
+              { value: "24/7", label: "Continuous Monitoring" },
+              { value: "Enterprise Ready", label: "Executive Reports" },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5"
+              >
+                <div className="text-3xl font-black text-white mb-2">
+                  {item.value}
                 </div>
-              ),
-            )}
+                <div className="text-sm text-slate-400 leading-relaxed">
+                  {item.label}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -459,51 +508,49 @@ function Home() {
                 speeds remediation across complex supply chains.
               </p>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-12 text-center">
-                <div className="bg-[#0c1222]/40 border border-slate-800/60 p-6 rounded-2xl">
-                  <div className="text-3xl font-black text-emerald-400">
-                    95%
-                  </div>
-                  <div className="text-xs text-slate-400 mt-1">
-                    of organizations rely heavily on third-party vendors.
-                  </div>
-                </div>
-                <div className="bg-[#0c1222]/40 border border-slate-800/60 p-6 rounded-2xl">
-                  <div className="text-3xl font-black text-sky-400">80+</div>
-                  <div className="text-xs text-slate-400 mt-1">
-                    average vendor endpoints used by modern enterprises.
-                  </div>
-                </div>
-                <div className="bg-[#0c1222]/40 border border-slate-800/60 p-6 rounded-2xl border-dashed border-red-500/20">
-                  <div className="text-3xl font-black text-red-400">
-                    1 Weak Link
-                  </div>
-                  <div className="text-xs text-slate-400 mt-1">
-                    can expose an entire organization's cloud pipeline.
-                  </div>
-                </div>
-              </div>
-
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-6 my-12 text-left">
                 {[
-                  "Reduce breach window",
-                  "Continuous configuration verification",
-                  "Automated compliance evidence",
-                  "Actionable remediation playbooks",
-                ].map((t) => (
-                  <li
-                    key={t}
-                    className="px-4 py-2 rounded-lg"
-                    style={{
-                      backgroundColor: "var(--bg-card-inner)",
-                      border: "1px solid var(--border-subtle)",
-                      color: "var(--text-primary)",
-                    }}
+                  {
+                    problem: "Weak vendor security hides real risk.",
+                    solution: "Continuously assess third-party posture without disrupting business systems.",
+                    impact: "Reduce the chance that a supplier vulnerability becomes a board-level incident.",
+                  },
+                  {
+                    problem: "Audit teams spend hours chasing fragmented evidence.",
+                    solution: "Generate executive-ready reports with compliance context.",
+                    impact: "Speed decision-making and simplify vendor review cycles.",
+                  },
+                  {
+                    problem: "Procurement lacks a trusted vendor risk signal.",
+                    solution: "Centralize vendor security scores and trend history for every supplier.",
+                    impact: "Identify risky vendors before they enter contracts.",
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.problem}
+                    className="rounded-3xl border border-[var(--border-color)] bg-[var(--bg-card-inner)] p-5"
                   >
-                    {t}
-                  </li>
+                    <div className="text-xs uppercase tracking-[0.25em] text-slate-500 font-mono mb-3">
+                      Problem
+                    </div>
+                    <div className="text-sm text-white font-semibold mb-3">
+                      {item.problem}
+                    </div>
+                    <div className="text-xs uppercase tracking-[0.22em] text-slate-500 font-mono mb-3">
+                      Solution
+                    </div>
+                    <div className="text-sm text-slate-300 leading-relaxed mb-3">
+                      {item.solution}
+                    </div>
+                    <div className="text-xs uppercase tracking-[0.22em] text-slate-500 font-mono mb-2">
+                      Business Impact
+                    </div>
+                    <div className="text-sm text-slate-400 leading-relaxed">
+                      {item.impact}
+                    </div>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
             {/* PRODUCT MANAGER APPROVED: HIGH-FIDELITY RISK DISTRIBUTION BARS */}
             <div className="w-full bg-[#0c1222]/50 border border-slate-800/80 rounded-2xl p-6 flex flex-col justify-between min-h-[220px] h-full shadow-2xl">
@@ -618,27 +665,27 @@ function Home() {
           {[
             {
               title: "HTTP Security Header Analysis",
-              desc: "Evaluates perimeters for HSTS, CSP, and cross-framing defenses.",
+              desc: "Detect missing or weak header protections so your team can close vendor configuration gaps before they become incidents.",
             },
             {
               title: "DNS Security Validation",
-              desc: "Validates corporate cryptographic alignment using SPF and DMARC configurations.",
+              desc: "Verify SPF and DMARC alignment across suppliers to reduce spoofing risk and protect email trust.",
             },
             {
               title: "Vendor Risk Scoring",
-              desc: "Generates uniform corporate maturity rankings based on passive scanning rules.",
+              desc: "Turn raw vendor signals into a clear security grade that makes procurement and security reviews faster.",
             },
             {
               title: "PDF Executive Reports",
-              desc: "Exports beautiful high-fidelity audits for security stakeholders with one click.",
+              desc: "Deliver board-ready insights and compliance evidence from every assessment with one click.",
             },
             {
               title: "Email Risk Alerts",
-              desc: "Triggers background Nodemailer despatches when high-severity threats break boundaries.",
+              desc: "Notify stakeholders instantly when a vendor crosses a risk threshold so teams can act before exposure spreads.",
             },
             {
               title: "Historical Scan Ledger",
-              desc: "Tracks changes over time by caching assets securely inside MongoDB Atlas.",
+              desc: "See how vendor security changes over time and compare trends across your supplier portfolio.",
             },
           ].map((f) => (
             <div
@@ -705,48 +752,46 @@ function Home() {
         >
           How Risk Sentinel Works
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-0 gap-y-6">
           {[
-            {
-              title: "Discover",
-              body: "Map vendor assets and dependencies automatically.",
-            },
-            {
-              title: "Assess",
-              body: "Analyze configurations, headers, and signatures.",
-            },
-            {
-              title: "Act",
-              body: "Prioritize and trigger remediation workflows.",
-            },
+            { title: "Discover", body: "Identify vendor assets, domains, and technology stacks with a unified collection process." },
+            { title: "Collect", body: "Gather observable vendor signals from headers, DNS, TLS, and infrastructure without active disruption." },
+            { title: "Analyze", body: "Turn visibility into actionable risk insights using enterprise-grade rules and security context." },
+            { title: "Score", body: "Apply a consistent risk rating across suppliers so stakeholders can compare security posture instantly." },
+            { title: "Report", body: "Generate executive summaries and compliance-ready evidence for security reviews and vendor committees." },
+            { title: "Monitor", body: "Continuously watch for change and trigger alerts when vendor posture deteriorates." },
           ].map((s, idx) => (
-            <div
-              key={s.title}
-              className="p-6 rounded-2xl flex flex-col gap-4"
-              style={{
-                backgroundColor: "var(--bg-card)",
-                border: "1px solid var(--border-color)",
-              }}
-            >
+            <div key={s.title} className="relative flex items-stretch">
+              {/* Card */}
               <div
-                className="w-14 h-14 rounded-full flex items-center justify-center"
-                style={{
-                  background:
-                    "linear-gradient(135deg, rgba(16,185,129,0.08), rgba(6,182,212,0.06))",
-                  border: "1px solid var(--border-subtle)",
-                }}
+                className="group flex-1 relative p-6 rounded-2xl flex flex-col gap-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(16,185,129,0.08)]"
+                style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border-color)" }}
               >
-                <div className="font-bold text-emerald-400">{idx + 1}</div>
+                <div
+                  className="w-14 h-14 rounded-full flex items-center justify-center"
+                  style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.08), rgba(6,182,212,0.06))", border: "1px solid var(--border-subtle)" }}
+                >
+                  <span className="font-bold text-emerald-400">{idx + 1}</span>
+                </div>
+                <h4 className="font-bold text-lg" style={{ color: "var(--text-primary)" }}>{s.title}</h4>
+                <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{s.body}</p>
               </div>
-              <h4
-                className="font-bold text-lg"
-                style={{ color: "var(--text-primary)" }}
-              >
-                {s.title}
-              </h4>
-              <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-                {s.body}
-              </p>
+              {/* Arrow — show after every card except last in each row and not the last card */}
+              {idx !== 5 && (
+                <div className="hidden xl:flex items-center justify-center w-8 shrink-0 z-10">
+                  <div className="flex flex-col items-center gap-0.5">
+                    <div className="w-4 h-[1px] bg-emerald-500/30" />
+                    <ChevronRight className="w-3.5 h-3.5 text-emerald-500/50 -ml-1" />
+                  </div>
+                </div>
+              )}
+              {/* Mobile arrow below each card except last */}
+              {idx !== 5 && (
+                <div className="xl:hidden absolute -bottom-4 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center">
+                  <div className="h-3 w-[1px] bg-emerald-500/30" />
+                  <ChevronRight className="w-3 h-3 text-emerald-500/40 rotate-90" />
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -1072,19 +1117,29 @@ function Home() {
           className="text-2xl font-bold mb-6"
           style={{ color: "var(--text-primary)" }}
         >
-          Key Benefits
+          Business Benefits
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
-            "Faster detection and response",
-            "Reduced operational overhead",
-            "Evidence for audits and compliance",
-            "Actionable, prioritized findings",
-            "Seamless integrations with tooling",
-            "Enterprise-grade data retention",
-          ].map((b) => (
+            {
+              title: "Security Team",
+              desc: "Continuous monitoring, automated risk scoring, and fast detection across vendor infrastructure.",
+            },
+            {
+              title: "Compliance Team",
+              desc: "Audit-ready reports, evidence trails, and control alignment for board and regulatory reviews.",
+            },
+            {
+              title: "Procurement Team",
+              desc: "Vendor comparison and risk context so sourcing decisions are grounded in security data.",
+            },
+            {
+              title: "Executives",
+              desc: "High-level risk visibility and alerts that make vendor exposure measurable and accountable.",
+            },
+          ].map((item) => (
             <div
-              key={b}
+              key={item.title}
               className="rounded-2xl p-6"
               style={{
                 backgroundColor: "var(--bg-card)",
@@ -1095,11 +1150,69 @@ function Home() {
                 className="font-semibold mb-2"
                 style={{ color: "var(--text-primary)" }}
               >
-                {b}
+                {item.title}
               </h4>
               <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-                Short description highlighting why this matters for enterprise
-                security teams.
+                {item.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section
+        id="capabilities"
+        className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pb-20 relative z-10"
+      >
+        <h3
+          className="text-2xl font-bold mb-6"
+          style={{ color: "var(--text-primary)" }}
+        >
+          Product Capabilities
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+          {[
+            {
+              title: "Executive Reports",
+              desc: "Export concise vendor risk summaries for CISO and board reviews.",
+            },
+            {
+              title: "Risk Scoring",
+              desc: "Standardize vendor comparisons with a transparent security grade.",
+            },
+            {
+              title: "Vendor History",
+              desc: "Track vendor posture changes over time and identify trend shifts.",
+            },
+            {
+              title: "PDF Export",
+              desc: "Create shareable reports for audits, procurement reviews, and leadership.",
+            },
+            {
+              title: "Email Alerts",
+              desc: "Notify teams when vendor security lapses or exposures emerge.",
+            },
+            {
+              title: "Multivendor Comparison",
+              desc: "Compare supplier security posture side by side to support sourcing decisions.",
+            },
+            {
+              title: "Historical Timeline",
+              desc: "See what changed, when it changed, and how vendor risk evolved.",
+            },
+          ].map((item) => (
+            <div
+              key={item.title}
+              className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-6 transition-all hover:-translate-y-1"
+            >
+              <h4
+                className="font-semibold text-lg mb-2"
+                style={{ color: "var(--text-primary)" }}
+              >
+                {item.title}
+              </h4>
+              <p className="text-sm text-slate-400 leading-relaxed">
+                {item.desc}
               </p>
             </div>
           ))}
@@ -1120,15 +1233,27 @@ function Home() {
           {[
             {
               q: "How often are vendors rescanned?",
-              a: "We continuously monitor and perform full rescans on a configurable cadence; critical changes trigger immediate re-evaluation.",
+              a: "Vendor posture is reassessed continuously, with critical exposures triggering immediate re-evaluation and alerting.",
             },
             {
-              q: "Can I export reports?",
-              a: "Yes — generate audit-ready reports in PDF/CSV formats and schedule automated exports to your storage.",
+              q: "Can I export compliance reports?",
+              a: "Yes — generate audit-ready reports in PDF format and archive evidence for security and procurement reviews.",
             },
             {
-              q: "Does it integrate with SIEMs?",
-              a: "Out-of-the-box connectors are available for popular SIEM and ticketing platforms.",
+              q: "Does Risk Sentinel store vendor data?",
+              a: "Vendor snapshots are retained securely so you can compare historical trends without exposing raw infrastructure details.",
+            },
+            {
+              q: "Can this integrate with SIEM?",
+              a: "Risk Sentinel is designed to feed your existing toolchain through alerts, exports, and API-ready risk data.",
+            },
+            {
+              q: "How is the risk score calculated?",
+              a: "A normalized score combines header, DNS, infrastructure and historical findings into a consistent vendor risk grade.",
+            },
+            {
+              q: "What frameworks are supported?",
+              a: "We support common security and compliance frameworks through our reporting model and can adapt to your review standards.",
             },
           ].map((item, idx) => (
             <FAQItem
@@ -1157,11 +1282,10 @@ function Home() {
               className="text-2xl font-bold mb-2"
               style={{ color: "var(--text-primary)" }}
             >
-              Ready to reduce vendor risk?
+              Start identifying risky vendors before they become business incidents.
             </h3>
             <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-              Start a free evaluation or book a demo to see Risk Sentinel in
-              your environment.
+              Launch a free assessment or schedule a demo to see how Risk Sentinel fits into your security program.
             </p>
           </div>
           <div className="flex gap-3 mt-6 md:mt-0">
@@ -1169,7 +1293,7 @@ function Home() {
               to="/login"
               className="px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold rounded-xl text-sm transition-all shadow-lg shadow-emerald-500/20"
             >
-              Get Started
+              Run Free Assessment
             </Link>
             <Link
               to="/about"
@@ -1180,40 +1304,62 @@ function Home() {
                 color: "var(--text-primary)",
               }}
             >
-              Book a Demo
+              Book Product Demo
             </Link>
           </div>
         </div>
       </section>
 
       <footer className="w-full max-w-[1440px] mx-auto px-6 md:px-12 xl:px-20 pb-12 relative z-10">
-        <div
-          className="rounded-2xl p-6 mt-6"
-          style={{
-            backgroundColor: "var(--bg-card)",
-            border: "1px solid var(--border-color)",
-          }}
-        >
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <Shield className="w-6 h-6 text-emerald-400" />
-              <div>
-                <div
-                  className="font-bold"
-                  style={{ color: "var(--text-primary)" }}
-                >
-                  RISK SENTINEL
-                </div>
-                <div
-                  className="text-xs"
-                  style={{ color: "var(--text-secondary)" }}
-                >
-                  Enterprise Vendor Risk Intelligence
-                </div>
-              </div>
+        <div className="border-t pt-12 mt-4" style={{ borderColor: "var(--border-subtle)" }}>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12 text-xs font-medium" style={{ color: "var(--text-secondary)" }}>
+            {/* Product */}
+            <div className="space-y-3">
+              <div className="font-bold uppercase tracking-wider text-[10px] mb-4" style={{ color: "var(--text-primary)" }}>Product</div>
+              <Link to="/" className="block hover:text-emerald-400 transition-colors">Platform Overview</Link>
+              <div className="hover:text-emerald-400 transition-colors cursor-pointer">Risk Scoring Engine</div>
+              <div className="hover:text-emerald-400 transition-colors cursor-pointer">Executive Reports</div>
+              <div className="hover:text-emerald-400 transition-colors cursor-pointer">Continuous Monitoring</div>
+              <div className="hover:text-emerald-400 transition-colors cursor-pointer">Vendor Comparison</div>
             </div>
-            <div className="text-sm" style={{ color: "var(--text-secondary)" }}>
-              © {new Date().getFullYear()} Risk Sentinel — All rights reserved
+            {/* Resources */}
+            <div className="space-y-3">
+              <div className="font-bold uppercase tracking-wider text-[10px] mb-4" style={{ color: "var(--text-primary)" }}>Resources</div>
+              <div className="hover:text-emerald-400 transition-colors cursor-pointer">Documentation</div>
+              <div className="hover:text-emerald-400 transition-colors cursor-pointer">API Reference</div>
+              <div className="hover:text-emerald-400 transition-colors cursor-pointer">Roadmap</div>
+              <div className="hover:text-emerald-400 transition-colors cursor-pointer">Security Blog</div>
+              <div className="hover:text-emerald-400 transition-colors cursor-pointer">Platform Status</div>
+            </div>
+            {/* Company */}
+            <div className="space-y-3">
+              <div className="font-bold uppercase tracking-wider text-[10px] mb-4" style={{ color: "var(--text-primary)" }}>Company</div>
+              <Link to="/about" className="block hover:text-emerald-400 transition-colors">About Us</Link>
+              <div className="hover:text-emerald-400 transition-colors cursor-pointer">Careers</div>
+              <div className="hover:text-emerald-400 transition-colors cursor-pointer">Contact</div>
+              <div className="hover:text-emerald-400 transition-colors cursor-pointer">Press & Media</div>
+              <a href="https://github.com/ashok770/vendor-security-scorecard" target="_blank" rel="noreferrer" className="block hover:text-emerald-400 transition-colors">GitHub</a>
+            </div>
+            {/* Legal */}
+            <div className="space-y-3">
+              <div className="font-bold uppercase tracking-wider text-[10px] mb-4" style={{ color: "var(--text-primary)" }}>Legal & Security</div>
+              <div className="hover:text-emerald-400 transition-colors cursor-pointer">Privacy Policy</div>
+              <div className="hover:text-emerald-400 transition-colors cursor-pointer">Terms of Service</div>
+              <div className="hover:text-emerald-400 transition-colors cursor-pointer">Cookie Policy</div>
+              <div className="hover:text-emerald-400 transition-colors cursor-pointer">Security Disclosure</div>
+              <div className="hover:text-emerald-400 transition-colors cursor-pointer">Compliance</div>
+            </div>
+          </div>
+
+          {/* Bottom bar */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-t pt-6" style={{ borderColor: "var(--border-subtle)" }}>
+            <div className="flex items-center gap-2">
+              <Shield className="w-4 h-4 text-emerald-400" />
+              <span className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>RISK SENTINEL</span>
+              <span className="text-xs" style={{ color: "var(--text-muted)" }}>— Enterprise Vendor Risk Intelligence</span>
+            </div>
+            <div className="text-xs" style={{ color: "var(--text-muted)" }}>
+              © {new Date().getFullYear()} Risk Sentinel Inc. All rights reserved.
             </div>
           </div>
         </div>
